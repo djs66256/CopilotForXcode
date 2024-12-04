@@ -14,6 +14,7 @@ let package = Package(
         .library(name: "Preferences", targets: ["Preferences", "Configs"]),
         .library(name: "Logger", targets: ["Logger"]),
         .library(name: "OpenAIService", targets: ["OpenAIService"]),
+        .library(name: "CustomSuggestion", targets: ["CustomSuggestion"]),
         .library(name: "ChatTab", targets: ["ChatTab"]),
         .library(name: "FileSystem", targets: ["FileSystem"]),
         .library(
@@ -421,6 +422,28 @@ let package = Package(
         .testTarget(
             name: "GitHubCopilotServiceTests",
             dependencies: ["GitHubCopilotService"]
+        ),
+
+        // MARK: - CustomSuggestion
+        .target(
+            name: "CustomSuggestion",
+            dependencies: [
+                "LanguageClient",
+                "Keychain",
+                "SuggestionBasic",
+                "Preferences",
+                "Terminal",
+                "XcodeInspector",
+                "BuiltinExtension",
+                "ChatTab",
+                "SharedUIComponents",
+                .product(name: "JSONRPC", package: "JSONRPC"),
+                .product(name: "CopilotForXcodeKit", package: "CopilotForXcodeKit"),
+            ]
+        ),
+        .testTarget(
+            name: "CustomSuggestionTests",
+            dependencies: ["CustomSuggestion"]
         ),
 
         // MARK: - Codeium
