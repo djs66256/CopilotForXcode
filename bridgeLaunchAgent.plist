@@ -3,12 +3,12 @@
 <plist version="1.0">
 <dict>
 	<key>Label</key>
-	<string>com.intii.CopilotForXcode.CommunicationBridge</string>
+	<string>com.daniel.CopilotForXcode.CommunicationBridge</string>
 	<key>Program</key>
 	<string>/Applications/Copilot for Xcode.app/Contents/Applications/CommunicationBridge</string>
 	<key>MachServices</key>
 	<dict>
-		<key>com.intii.CopilotForXcode.CommunicationBridge</key>
+		<key>com.daniel.CopilotForXcode.CommunicationBridge</key>
 		<true/>
 	</dict>
 </dict>

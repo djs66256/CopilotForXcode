@@ -170,7 +170,7 @@ When this hotkey is not set to enabled globally, it will only work when the serv
 5. After signing in, return to the app and click on "Confirm Sign-in" to complete the process.
 6. Go to "Feature - Suggestion" and update the feature provider to "GitHub Copilot".
 
-The installed language server is located at `~/Library/Application Support/com.intii.CopilotForXcode/GitHub Copilot/executable/`.
+The installed language server is located at `~/Library/Application Support/com.daniel.CopilotForXcode/GitHub Copilot/executable/`.
 
 #### Setting Up Codeium
 
@@ -181,7 +181,7 @@ The installed language server is located at `~/Library/Application Support/com.i
 
 > The key is stored in the keychain. When the helper app tries to access the key for the first time, it will prompt you to enter the password to access the keychain. Please select "Always Allow" to let the helper app access the key.
 
-The installed language server is located at `~/Library/Application Support/com.intii.CopilotForXcode/Codeium/executable/`.
+The installed language server is located at `~/Library/Application Support/com.daniel.CopilotForXcode/Codeium/executable/`.
 
 ### Setting Up Chat Feature
 

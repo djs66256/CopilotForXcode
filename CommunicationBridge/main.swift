@@ -5,7 +5,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {}
 
 let bundleIdentifierBase = Bundle(url: Bundle.main.bundleURL.appendingPathComponent(
     "CopilotForXcodeExtensionService.app"
-))?.object(forInfoDictionaryKey: "BUNDLE_IDENTIFIER_BASE") as? String ?? "com.intii.CopilotForXcode"
+))?.object(forInfoDictionaryKey: "BUNDLE_IDENTIFIER_BASE") as? String ?? "com.daniel.CopilotForXcode"
 
 let serviceIdentifier = bundleIdentifierBase + ".CommunicationBridge"
 let appDelegate = AppDelegate()

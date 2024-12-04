@@ -3,7 +3,7 @@ import Foundation
 import Terminal
 
 public final class ShortcutChatPlugin: ChatPlugin {
-    public static var id: String { "com.intii.shortcut" }
+    public static var id: String { "com.daniel.shortcut" }
     public static var command: String { "shortcut" }
     public static var name: String { "Shortcut" }
     public static var description: String { """

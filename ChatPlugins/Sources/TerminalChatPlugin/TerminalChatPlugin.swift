@@ -4,7 +4,7 @@ import Terminal
 import XcodeInspector
 
 public final class TerminalChatPlugin: ChatPlugin {
-    public static var id: String { "com.intii.terminal" }
+    public static var id: String { "com.daniel.terminal" }
     public static var command: String { "run" }
     public static var name: String { "Terminal" }
     public static var description: String { """
