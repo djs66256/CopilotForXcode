@@ -14,7 +14,7 @@ import Workspace
 public final class CustomSuggestionExtension: BuiltinExtension {
     public var extensionIdentifier: String { "com.custom_suggestion" }
 
-//    public let suggestionService: CodeiumSuggestionService
+    public let suggestionService: CustomSuggestionService
 
     public var chatTabTypes: [any CustomChatTab] {
         []
@@ -40,15 +40,14 @@ public final class CustomSuggestionExtension: BuiltinExtension {
     public init(workspacePool: WorkspacePool) {
         self.workspacePool = workspacePool
         serviceLocator = .init(workspacePool: workspacePool)
-//        suggestionService = .init(serviceLocator: serviceLocator)
+        suggestionService = .init(locator: serviceLocator)
     }
 
     public func workspaceDidOpen(_ workspace: WorkspaceInfo) {
         Task {
             do {
                 guard await isLanguageServerInUse else { return }
-                guard let service = await serviceLocator.getService(from: workspace) else { return }
-                try await service.notifyOpenWorkspace(workspaceURL: workspace.workspaceURL)
+                try await suggestionService.notifyOpenWorkspace(workspaceURL: workspace.workspaceURL)
             } catch {
                 Logger.customSuggestion.error(error.localizedDescription)
             }
@@ -59,8 +58,7 @@ public final class CustomSuggestionExtension: BuiltinExtension {
         Task {
             do {
                 guard await isLanguageServerInUse else { return }
-                guard let service = await serviceLocator.getService(from: workspace) else { return }
-                try await service.notifyCloseWorkspace(workspaceURL: workspace.workspaceURL)
+                try await suggestionService.notifyCloseWorkspace(workspaceURL: workspace.workspaceURL)
             } catch {
                 Logger.customSuggestion.error(error.localizedDescription)
             }
@@ -79,8 +77,7 @@ public final class CustomSuggestionExtension: BuiltinExtension {
 
             do {
                 let content = try String(contentsOf: documentURL, encoding: .utf8)
-                guard let service = await serviceLocator.getService(from: workspace) else { return }
-                try await service.notifyOpenTextDocument(fileURL: documentURL, content: content)
+                try await suggestionService.notifyOpenTextDocument(fileURL: documentURL, content: content)
             } catch {
                 Logger.customSuggestion.error(error.localizedDescription)
             }
@@ -95,8 +92,7 @@ public final class CustomSuggestionExtension: BuiltinExtension {
         Task {
             guard await isLanguageServerInUse else { return }
             do {
-                guard let service = await serviceLocator.getService(from: workspace) else { return }
-                try await service.notifyCloseTextDocument(fileURL: documentURL)
+                try await suggestionService.notifyCloseTextDocument(fileURL: documentURL)
             } catch {
                 Logger.customSuggestion.error(error.localizedDescription)
             }
@@ -118,8 +114,7 @@ public final class CustomSuggestionExtension: BuiltinExtension {
             { return }
             do {
                 guard let content else { return }
-                guard let service = await serviceLocator.getService(from: workspace) else { return }
-                try await service.notifyChangeTextDocument(fileURL: documentURL, content: content)
+                try await suggestionService.notifyChangeTextDocument(fileURL: documentURL, content: content)
 //                try await service.refreshIDEContext(
 //                    fileURL: documentURL,
 //                    content: content,
@@ -128,7 +123,7 @@ public final class CustomSuggestionExtension: BuiltinExtension {
 //                    workspaceURL: workspace.workspaceURL
 //                )
             } catch {
-                Logger.codeium.error(error.localizedDescription)
+                Logger.customSuggestion.error(error.localizedDescription)
             }
         }
     }
@@ -158,7 +153,7 @@ final class ServiceLocator {
         self.workspacePool = workspacePool
     }
 
-    func getService(from workspace: WorkspaceInfo) async -> SuggestionService? {
+    func getService(from workspace: WorkspaceInfo) async -> CustomService? {
         guard let workspace = workspacePool.workspaces[workspace.workspaceURL],
               let plugin = workspace.plugin(for: CustomSuggestionWorkspacePlugin.self)
         else { return nil }

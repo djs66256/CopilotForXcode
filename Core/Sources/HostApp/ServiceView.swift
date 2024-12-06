@@ -68,7 +68,7 @@ struct ServiceView: View {
                     ScrollView {
                         CustomSuggestionView().padding()
                     }.sidebarItem(
-                        tag: 2,
+                        tag: 6,
                         title: "Custom Suggestion Services",
                         subtitle: "Suggestion",
                         image: "globe"

@@ -30,7 +30,7 @@ struct ContinueRequestStrategy: RequestStrategy {
         ))
     }
 
-    func createStreamStopStrategy(model: Service.Model) -> some StreamStopStrategy {
+    func createStreamStopStrategy(model: CustomService.Model) -> some StreamStopStrategy {
         OpeningTagBasedStreamStopStrategy(
             openingTag: Tag.openingCode,
             toleranceIfNoOpeningTagFound: { if case .chatModel = model { 4 } else { 0 } }()

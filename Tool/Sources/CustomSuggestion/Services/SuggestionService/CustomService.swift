@@ -3,7 +3,7 @@ import CopilotForXcodeKit
 import Foundation
 //import Fundamental
 
-actor Service {
+actor CustomService {
     enum Model {
         case chatModel(ChatModel)
         case completionModel(CompletionModel)

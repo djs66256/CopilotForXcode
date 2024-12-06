@@ -2,10 +2,13 @@ import CopilotForXcodeKit
 import Foundation
 //import Fundamental
 
-public class SuggestionService: SuggestionServiceType {
-    let service = Service()
+public class CustomSuggestionService: SuggestionServiceType {
 
-    public init() {}
+
+    let locator: ServiceLocator
+    init(locator: ServiceLocator) {
+        self.locator = locator
+    }
 
     public func terminate() {
         
@@ -24,14 +27,18 @@ public class SuggestionService: SuggestionServiceType {
     public func notifyRejected(_ suggestions: [CodeSuggestion], workspace: WorkspaceInfo) async {}
 
     public func cancelRequest(workspace: WorkspaceInfo) async {
-        await service.cancelRequest()
+        let service = await locator.getService(from: workspace)
+        await service?.cancelRequest()
     }
 
     public func getSuggestions(
         _ request: SuggestionRequest,
         workspace: WorkspaceInfo
     ) async throws -> [CodeSuggestion] {
-        try await service.getSuggestions(request, workspace: workspace)
+        guard let service = await locator.getService(from: workspace) else {
+            return []
+        }
+        return try await service.getSuggestions(request, workspace: workspace)
     }
 
     public func notifyAccepted(_ suggestion: CodeSuggestion) async {

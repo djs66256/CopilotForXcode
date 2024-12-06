@@ -26,7 +26,7 @@ struct NaiveRequestStrategy: RequestStrategy {
         NoOpRawSuggestionPostProcessingStrategy()
     }
 
-    func createStreamStopStrategy(model: Service.Model) -> some StreamStopStrategy {
+    func createStreamStopStrategy(model: CustomService.Model) -> some StreamStopStrategy {
         DefaultStreamStopStrategy()
     }
 

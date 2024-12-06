@@ -63,6 +63,7 @@ public final class Service {
         BuiltinExtensionManager.shared.addExtensions([
             GitHubCopilotExtension(workspacePool: workspacePool),
             CodeiumExtension(workspacePool: workspacePool),
+            CustomSuggestionExtension(workspacePool: workspacePool),
         ])
 
         let guiController = GraphicalUserInterfaceController()
