@@ -2,6 +2,7 @@ import ComposableArchitecture
 //import Fundamental
 //import Storage
 import SwiftUI
+import CustomSuggestion
 
 @MainActor
 struct TabbyModelEditView: View {

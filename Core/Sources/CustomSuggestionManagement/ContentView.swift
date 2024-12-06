@@ -3,13 +3,14 @@ import ComposableArchitecture
 //import Storage
 //import SuggestionService
 import SwiftUI
+import CustomSuggestion
 
-let store = StoreOf<TheApp>(
-    initialState: .init(),
-    reducer: { TheApp() }
-)
+//let store = StoreOf<TheApp>(
+//    initialState: .init(),
+//    reducer: { TheApp() }
+//)
 
-struct ContentView: View {
+public struct CustomSuggestionContentView: View {
     final class Settings: ObservableObject {
         @AppStorage(\.chatModelId) var chatModelId
         @AppStorage(\.installBetaBuild) var installBetaBuild
@@ -21,9 +22,16 @@ struct ContentView: View {
     @StateObject var settings = Settings()
     @State var isEditingCustomModel: Bool = false
 
+    let store: StoreOf<TheApp> = StoreOf<TheApp>(
+        initialState: .init(),
+        reducer: { TheApp() }
+    )
+    public init() {
+    }
+
 //    @Environment(\.updateChecker) var updateChecker
 
-    var body: some View {
+    public var body: some View {
         ScrollView {
             WithPerceptionTracking {
                 let modelType = CustomModelType(rawValue: settings.chatModelId)
@@ -282,7 +290,7 @@ struct NumberInput<V: Strideable, Label: View>: View {
 }
 
 #Preview {
-    ContentView()
+    CustomSuggestionContentView()
         .frame(width: 800, height: 1000)
 }
 

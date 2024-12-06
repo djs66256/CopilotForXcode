@@ -2,7 +2,13 @@ import AppKit
 import Foundation
 import Logger
 #if DEBUG
+#if canImport(IssueReporting)
 import IssueReporting
+#else
+func reportIssue(_ issue: String) {
+    Logger.debug.error(issue)
+}
+#endif
 #endif
 
 // MARK: - State

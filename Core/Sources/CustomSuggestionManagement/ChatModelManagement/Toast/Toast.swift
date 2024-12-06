@@ -2,29 +2,29 @@ import ComposableArchitecture
 import Dependencies
 import Foundation
 import SwiftUI
-/*
-public enum ToastType {
+
+enum ToastType {
     case info
     case warning
     case error
 }
 
-public struct ToastKey: EnvironmentKey {
-    public static var defaultValue: (String, ToastType) -> Void = { _, _ in }
+struct ToastKey: EnvironmentKey {
+    static var defaultValue: (String, ToastType) -> Void = { _, _ in }
 }
 
-public extension EnvironmentValues {
+extension EnvironmentValues {
     var toast: (String, ToastType) -> Void {
         get { self[ToastKey.self] }
         set { self[ToastKey.self] = newValue }
     }
 }
 
-public struct ToastControllerDependencyKey: DependencyKey {
-    public static let liveValue = ToastController(messages: [])
+struct ToastControllerDependencyKey: DependencyKey {
+    static let liveValue = ToastController(messages: [])
 }
 
-public extension DependencyValues {
+extension DependencyValues {
     var toastController: ToastController {
         get { self[ToastControllerDependencyKey.self] }
         set { self[ToastControllerDependencyKey.self] = newValue }
@@ -44,27 +44,27 @@ public extension DependencyValues {
     }
 }
 
-public class ToastController: ObservableObject {
-    public struct Message: Identifiable, Equatable {
-        public struct MessageButton: Equatable {
-            public static func == (lhs: Self, rhs: Self) -> Bool {
+class ToastController: ObservableObject {
+    struct Message: Identifiable, Equatable {
+        struct MessageButton: Equatable {
+            static func == (lhs: Self, rhs: Self) -> Bool {
                 lhs.label == rhs.label
             }
 
-            public var label: Text
-            public var action: () -> Void
-            public init(label: Text, action: @escaping () -> Void) {
+            var label: Text
+            var action: () -> Void
+            init(label: Text, action: @escaping () -> Void) {
                 self.label = label
                 self.action = action
             }
         }
 
-        public var namespace: String?
-        public var id: UUID
-        public var type: ToastType
-        public var content: Text
-        public var buttons: [MessageButton]
-        public init(
+        var namespace: String?
+        var id: UUID
+        var type: ToastType
+        var content: Text
+        var buttons: [MessageButton]
+        init(
             id: UUID,
             type: ToastType,
             namespace: String? = nil,
@@ -79,13 +79,13 @@ public class ToastController: ObservableObject {
         }
     }
 
-    @Published public var messages: [Message] = []
+    @Published var messages: [Message] = []
 
-    public init(messages: [Message]) {
+    init(messages: [Message]) {
         self.messages = messages
     }
 
-    public func toast(
+    func toast(
         content: String,
         type: ToastType,
         namespace: String? = nil,
@@ -122,20 +122,20 @@ public class ToastController: ObservableObject {
 }
 
 @Reducer
-public struct Toast {
-    public typealias Message = ToastController.Message
+struct Toast {
+    typealias Message = ToastController.Message
 
     @ObservableState
-    public struct State: Equatable {
+    struct State: Equatable {
         var isObservingToastController = false
-        public var messages: [Message] = []
+        var messages: [Message] = []
 
-        public init(messages: [Message] = []) {
+        init(messages: [Message] = []) {
             self.messages = messages
         }
     }
 
-    public enum Action: Equatable {
+    enum Action: Equatable {
         case start
         case updateMessages([Message])
         case toast(String, ToastType, String?)
@@ -145,9 +145,9 @@ public struct Toast {
 
     struct CancelID: Hashable {}
 
-    public init() {}
+    init() {}
 
-    public var body: some ReducerOf<Self> {
+    var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
             case .start:
@@ -178,4 +178,3 @@ public struct Toast {
     }
 }
 
-*/

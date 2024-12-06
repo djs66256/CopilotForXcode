@@ -30,6 +30,7 @@ let package = Package(
             targets: [
                 "HostApp",
                 "Client",
+                "CustomSuggestionManagement",
                 "LaunchAgentManager",
                 "UpdateChecker",
             ]
@@ -52,6 +53,10 @@ let package = Package(
         .package(url: "https://github.com/intitni/KeyboardShortcuts", branch: "main"),
         .package(url: "https://github.com/intitni/CGEventOverride", from: "1.2.1"),
         .package(url: "https://github.com/intitni/Highlightr", branch: "master"),
+
+        .package(url: "https://github.com/intitni/CopilotForXcodeKit", branch: "feature/custom-chat-tab"),
+        .package(url: "https://github.com/krzyzanowskim/STTextView", branch: "0.9.0"),
+        .package(url: "https://github.com/ChimeHQ/JSONRPC", exact: "0.6.0"),
     ].pro,
     targets: [
         // MARK: - Main
@@ -122,6 +127,7 @@ let package = Package(
                 "Client",
                 "LaunchAgentManager",
                 "PlusFeatureFlag",
+                "CustomSuggestionManagement",
                 .product(name: "SuggestionProvider", package: "Tool"),
                 .product(name: "Toast", package: "Tool"),
                 .product(name: "SharedUIComponents", package: "Tool"),
@@ -292,6 +298,21 @@ let package = Package(
                 .product(name: "OpenAIService", package: "Tool"),
             ],
             path: "Sources/ChatContextCollectors/SystemInfoChatContextCollector"
+        ),
+
+        .target(
+            name: "CustomSuggestionManagement",
+            dependencies: [
+                .product(name: "ChatTab", package: "Tool"),
+                .product(name: "SharedUIComponents", package: "Tool"),
+                .product(name: "CopilotForXcodeKit", package: "Tool"),
+                .product(name: "CustomSuggestion", package: "Tool"),
+                .product(name: "JSONRPC", package: "JSONRPC"),
+                .product(name: "STTextView", package: "STTextView"),
+                .product(name: "Dependencies", package: "swift-dependencies"),
+                .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+            ],
+            path: "Sources/CustomSuggestionManagement"
         ),
 
         // MARK: Key Binding

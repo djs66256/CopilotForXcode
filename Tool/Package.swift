@@ -14,7 +14,7 @@ let package = Package(
         .library(name: "Preferences", targets: ["Preferences", "Configs"]),
         .library(name: "Logger", targets: ["Logger"]),
         .library(name: "OpenAIService", targets: ["OpenAIService"]),
-//        .library(name: "CustomSuggestion", targets: ["CustomSuggestion"]),
+        .library(name: "CustomSuggestion", targets: ["CustomSuggestion"]),
         .library(name: "ChatTab", targets: ["ChatTab"]),
         .library(name: "FileSystem", targets: ["FileSystem"]),
         .library(
@@ -89,6 +89,8 @@ let package = Package(
         .package(url: "https://github.com/lukepistrol/tree-sitter-objc", branch: "feature/spm"),
 
         .package(url: "https://github.com/krzyzanowskim/STTextView", branch: "0.9.0"),
+
+        .package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.0.0"),
 //        .package(url: "https://github.com/google/generative-ai-swift", from: "0.4.4"),
     ],
     targets: [

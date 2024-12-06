@@ -2,10 +2,11 @@
 import ComposableArchitecture
 //import Fundamental
 import SwiftUI
+import CustomSuggestion
 
 @MainActor
-struct CompletionModelEditView: View {
-    @Perception.Bindable var store: StoreOf<CompletionModelEdit>
+struct ChatModelEditView: View {
+    @Perception.Bindable var store: StoreOf<ChatModelEdit>
 
     @Environment(\.dismiss) var dismiss
 
@@ -23,6 +24,8 @@ struct CompletionModelEditView: View {
                             azureOpenAI
                         case .openAICompatible:
                             openAICompatible
+                        case .googleAI:
+                            googleAI
                         case .ollama:
                             ollama
                         case .unknown:
@@ -65,7 +68,7 @@ struct CompletionModelEditView: View {
             selection: $store.format,
             content: {
                 ForEach(
-                    CompletionModel.Format.allCases,
+                    ChatModel.Format.allCases,
                     id: \.rawValue
                 ) { format in
                     switch format {
@@ -75,6 +78,8 @@ struct CompletionModelEditView: View {
                         Text("Azure OpenAI").tag(format)
                     case .openAICompatible:
                         Text("OpenAI Compatible").tag(format)
+                    case .googleAI:
+                        Text("Google Generative AI").tag(format)
                     case .ollama:
                         Text("Ollama").tag(format)
                     case .unknown:
@@ -163,7 +168,7 @@ struct CompletionModelEditView: View {
     @ViewBuilder
     var openAI: some View {
         baseURLTextField(prompt: Text("https://api.openai.com")) {
-            Text("/v1/completions")
+            Text("/v1/chat/completions")
         }
         apiKeyNamePicker
 
@@ -189,6 +194,10 @@ struct CompletionModelEditView: View {
         VStack(alignment: .leading, spacing: 8) {
             Text(Image(systemName: "exclamationmark.triangle.fill")) + Text(
                 " To get an API key, please visit [https://platform.openai.com/api-keys](https://platform.openai.com/api-keys)"
+            )
+
+            Text(Image(systemName: "exclamationmark.triangle.fill")) + Text(
+                " If you don't have access to GPT-4, you may need to visit [https://platform.openai.com/account/billing/overview](https://platform.openai.com/account/billing/overview) to buy some credits. A ChatGPT Plus subscription is not enough to access GPT-4 through API."
             )
         }
         .padding(.vertical)
@@ -219,11 +228,11 @@ struct CompletionModelEditView: View {
         baseURLTextField(
             title: "",
             prompt: store.baseURLSelection.isFullURL
-                ? Text("https://api.openai.com/v1/completions")
+                ? Text("https://api.openai.com/v1/chat/completions")
                 : Text("https://api.openai.com")
         ) {
             if !store.baseURLSelection.isFullURL {
-                Text("/v1/completions")
+                Text("/v1/chat/completions")
             }
         }
         apiKeyNamePicker
@@ -256,14 +265,14 @@ struct CompletionModelEditView: View {
 
         maxTokensTextField
     }
-
+    
     @ViewBuilder
     var ollama: some View {
         baseURLTextField(
             title: "",
-            prompt: Text("https://127.0.0.1:11434/api/generate")
+            prompt: Text("http://127.0.0.1:11434")
         ) {
-            Text("/api/generate")
+            Text("/api/chat")
         }
 
         TextField("Model Name", text: $store.modelName)
@@ -276,7 +285,7 @@ struct CompletionModelEditView: View {
         
         VStack(alignment: .leading, spacing: 8) {
             Text(Image(systemName: "exclamationmark.triangle.fill")) + Text(
-                " For more details, please visit [https://ollama.com](https://ollama.com)"
+                " For more details, please visit [https://ollama.com](https://ollama.com)."
             )
         }
         .padding(.vertical)
@@ -284,9 +293,9 @@ struct CompletionModelEditView: View {
 }
 
 #Preview("OpenAI") {
-    CompletionModelEditView(
+    ChatModelEditView(
         store: .init(
-            initialState: CompletionModel(
+            initialState: ChatModel(
                 id: "3",
                 name: "Test Model 3",
                 format: .openAI,
@@ -294,18 +303,19 @@ struct CompletionModelEditView: View {
                     apiKeyName: "key",
                     baseURL: "apple.com",
                     maxTokens: 3000,
+                    supportsFunctionCalling: false,
                     modelName: "gpt-3.5-turbo"
                 )
             ).toState(),
-            reducer: { CompletionModelEdit() }
+            reducer: { ChatModelEdit() }
         )
     )
 }
 
 #Preview("OpenAI Compatible") {
-    CompletionModelEditView(
+    ChatModelEditView(
         store: .init(
-            initialState: CompletionModel(
+            initialState: ChatModel(
                 id: "3",
                 name: "Test Model 3",
                 format: .openAICompatible,
@@ -313,11 +323,28 @@ struct CompletionModelEditView: View {
                     apiKeyName: "key",
                     baseURL: "apple.com",
                     maxTokens: 3000,
+                    supportsFunctionCalling: false,
                     modelName: "gpt-3.5-turbo"
                 )
             ).toState(),
-            reducer: { CompletionModelEdit() }
+            reducer: { ChatModelEdit() }
         )
     )
 }
+
+//struct DynamicHeightTextInFormWorkaroundModifier: ViewModifier {
+//    func body(content: Content) -> some View {
+//        HStack(spacing: 0) {
+//            content
+//            Spacer()
+//        }
+//        .fixedSize(horizontal: false, vertical: true)
+//    }
+//}
+
+//public extension View {
+//    func dynamicHeightTextInFormWorkaround() -> some View {
+//        modifier(DynamicHeightTextInFormWorkaroundModifier())
+//    }
+//}
 

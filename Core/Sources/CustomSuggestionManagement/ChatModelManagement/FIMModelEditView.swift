@@ -2,6 +2,7 @@
 import ComposableArchitecture
 //import Fundamental
 import SwiftUI
+import CustomSuggestion
 
 @MainActor
 struct FIMModelEditView: View {

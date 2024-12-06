@@ -1,6 +1,6 @@
 import ComposableArchitecture
 import SwiftUI
-
+/*
 struct APIKeyManagementView: View {
     @Perception.Bindable var store: StoreOf<APIKeyManagement>
 
@@ -152,12 +152,12 @@ extension List {
         }
     }
 }
+//public extension View {
+//    @ViewBuilder func modify<Content: View>(@ViewBuilder transform: (Self) -> Content)
+//        -> some View
+//    {
+//        transform(self)
+//    }
+//}
 
-public extension View {
-    @ViewBuilder func modify<Content: View>(@ViewBuilder transform: (Self) -> Content)
-        -> some View
-    {
-        transform(self)
-    }
-}
-
+ */

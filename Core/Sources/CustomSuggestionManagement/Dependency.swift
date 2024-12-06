@@ -1,6 +1,7 @@
 import CopilotForXcodeKit
 import Dependencies
 //import SuggestionService
+import CustomSuggestion
 
 // MARK: - SuggestionService
 

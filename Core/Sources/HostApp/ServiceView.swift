@@ -26,7 +26,7 @@ struct ServiceView: View {
                         subtitle: "Suggestion",
                         image: "globe"
                     )
-                    
+
                     ChatModelManagementView(store: store.scope(
                         state: \.chatModelManagement,
                         action: \.chatModelManagement
@@ -61,6 +61,15 @@ struct ServiceView: View {
                     }.sidebarItem(
                         tag: 5,
                         title: "Other Suggestion Services",
+                        subtitle: "Suggestion",
+                        image: "globe"
+                    )
+
+                    ScrollView {
+                        CustomSuggestionView().padding()
+                    }.sidebarItem(
+                        tag: 2,
+                        title: "Custom Suggestion Services",
                         subtitle: "Suggestion",
                         image: "globe"
                     )

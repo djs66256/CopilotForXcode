@@ -1,6 +1,7 @@
 import ComposableArchitecture
 import CopilotForXcodeKit
 import Foundation
+import CustomSuggestion
 //import Fundamental
 //import Storage
 

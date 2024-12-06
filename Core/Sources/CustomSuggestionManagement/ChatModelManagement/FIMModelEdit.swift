@@ -4,6 +4,7 @@ import Dependencies
 //import Fundamental
 //import Storage
 import SwiftUI
+import CustomSuggestion
 
 @Reducer
 struct FIMModelEdit {
