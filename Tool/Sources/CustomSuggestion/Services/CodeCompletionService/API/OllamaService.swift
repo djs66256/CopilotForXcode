@@ -1,6 +1,6 @@
 import CopilotForXcodeKit
 import Foundation
-import Fundamental
+//import Fundamental
 
 public actor OllamaService {
     let url: URL

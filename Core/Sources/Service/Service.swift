@@ -1,5 +1,6 @@
 import BuiltinExtension
 import CodeiumService
+import CustomSuggestion
 import Combine
 import CommandHandler
 import Dependencies
@@ -80,6 +81,9 @@ public final class Service {
         }
         workspacePool.registerPlugin {
             BuiltinExtensionWorkspacePlugin(workspace: $0)
+        }
+        workspacePool.registerPlugin {
+            CustomSuggestionWorkspacePlugin(workspace: $0)
         }
 
         scheduledCleaner.service = self

@@ -2,7 +2,7 @@ import ComposableArchitecture
 import Dependencies
 import Foundation
 import SwiftUI
-
+/*
 public enum ToastType {
     case info
     case warning
@@ -178,3 +178,4 @@ public struct Toast {
     }
 }
 
+*/

@@ -1,7 +1,7 @@
 import ComposableArchitecture
-import Fundamental
-import Storage
-import SuggestionService
+//import Fundamental
+//import Storage
+//import SuggestionService
 import SwiftUI
 
 let store = StoreOf<TheApp>(
@@ -21,7 +21,7 @@ struct ContentView: View {
     @StateObject var settings = Settings()
     @State var isEditingCustomModel: Bool = false
 
-    @Environment(\.updateChecker) var updateChecker
+//    @Environment(\.updateChecker) var updateChecker
 
     var body: some View {
         ScrollView {
@@ -63,30 +63,30 @@ struct ContentView: View {
                             }
                         }
 
-                        Section {
-                            HStack {
-                                Toggle(isOn: .init(
-                                    get: { updateChecker.automaticallyChecksForUpdates },
-                                    set: { updateChecker.automaticallyChecksForUpdates = $0 }
-                                )) {
-                                    Text("Automatically Check for Update")
-                                }
-
-                                Button(action: {
-                                    updateChecker.checkForUpdates()
-                                }) {
-                                    HStack(spacing: 2) {
-                                        Image(systemName: "arrow.up.right.circle.fill")
-                                        Text("Check for Updates")
-                                    }
-                                }
-                            }
-
-                            Toggle("Install Beta Build", isOn: settings.$installBetaBuild)
-                            Toggle("Verbose Log (Logs to Console.app)", isOn: settings.$verboseLog)
-                        }
+//                        Section {
+//                            HStack {
+//                                Toggle(isOn: .init(
+//                                    get: { updateChecker.automaticallyChecksForUpdates },
+//                                    set: { updateChecker.automaticallyChecksForUpdates = $0 }
+//                                )) {
+//                                    Text("Automatically Check for Update")
+//                                }
+//
+//                                Button(action: {
+//                                    updateChecker.checkForUpdates()
+//                                }) {
+//                                    HStack(spacing: 2) {
+//                                        Image(systemName: "arrow.up.right.circle.fill")
+//                                        Text("Check for Updates")
+//                                    }
+//                                }
+//                            }
+//
+//                            Toggle("Install Beta Build", isOn: settings.$installBetaBuild)
+//                            Toggle("Verbose Log (Logs to Console.app)", isOn: settings.$verboseLog)
+//                        }
                     }
-                    .formStyle(.grouped)
+//                    .formStyle(.grouped)
 
                     TestFieldView(store: store.scope(state: \.testField, action: \.testField))
                         .padding(.horizontal, 24)

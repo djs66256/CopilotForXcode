@@ -1,6 +1,7 @@
 import CopilotForXcodeKit
 import Foundation
-import Fundamental
+import Logger
+//import Fundamental
 
 public final class CodeCompletionLogger {
     struct Model {
@@ -11,7 +12,7 @@ public final class CodeCompletionLogger {
     }
 
     @TaskLocal public static var logger: CodeCompletionLogger = .init(request: SuggestionRequest(
-        fileURL: .init(filePath: "/"),
+        fileURL: URL(fileURLWithPath: "/"),
         relativePath: "",
         language: .plaintext,
         content: "", 
@@ -93,7 +94,7 @@ public final class CodeCompletionLogger {
         let duration = now.timeIntervalSince(startTime)
         let formattedDuration = String(format: "%.2f", duration)
 
-        Logger.service.info("""
+        Logger.customSuggestion.info("""
         [Request] \(id)
 
         Duration: \(formattedDuration)
@@ -108,7 +109,7 @@ public final class CodeCompletionLogger {
         let duration = now.timeIntervalSince(startTime)
         let formattedDuration = String(format: "%.2f", duration)
 
-        Logger.service.info("""
+        Logger.customSuggestion.info("""
         [Request] \(id)
 
         Format: \(model.format)
@@ -121,13 +122,13 @@ public final class CodeCompletionLogger {
         CursorPosition: \(request.cursorPosition)
         """)
 
-        Logger.service.info("""
+        Logger.customSuggestion.info("""
         [Prompt] \(id)
 
         \(prompt.map { "\($0.role): \($0.message)" }.joined(separator: "\n\n"))
         """)
 
-        Logger.service.info("""
+        Logger.customSuggestion.info("""
         [Response] \(id)
 
         \(responses.enumerated().map { "\($0 + 1): \($1)" }.joined(separator: "\n\n"))

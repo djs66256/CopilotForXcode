@@ -1,7 +1,7 @@
-import CodeCompletionService
+//import CodeCompletionService
 import CopilotForXcodeKit
 import Foundation
-import Fundamental
+//import Fundamental
 
 /// This strategy mixed and rearrange everything naively to make the model think it's writing code
 /// at the end of a file.

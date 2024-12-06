@@ -1,7 +1,7 @@
-import CodeCompletionService
+//import CodeCompletionService
 import CopilotForXcodeKit
 import Foundation
-import Fundamental
+//import Fundamental
 
 /// The default strategy to generate prompts.
 ///

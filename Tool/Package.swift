@@ -5,7 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "Tool",
-    platforms: [.macOS(.v12)],
+    platforms: [.macOS(.v13)],
     products: [
         .library(name: "XPCShared", targets: ["XPCShared"]),
         .library(name: "Terminal", targets: ["Terminal"]),
@@ -14,7 +14,7 @@ let package = Package(
         .library(name: "Preferences", targets: ["Preferences", "Configs"]),
         .library(name: "Logger", targets: ["Logger"]),
         .library(name: "OpenAIService", targets: ["OpenAIService"]),
-        .library(name: "CustomSuggestion", targets: ["CustomSuggestion"]),
+//        .library(name: "CustomSuggestion", targets: ["CustomSuggestion"]),
         .library(name: "ChatTab", targets: ["ChatTab"]),
         .library(name: "FileSystem", targets: ["FileSystem"]),
         .library(
@@ -34,7 +34,7 @@ let package = Package(
         .library(name: "WorkspaceSuggestionService", targets: ["WorkspaceSuggestionService"]),
         .library(
             name: "SuggestionProvider",
-            targets: ["SuggestionProvider", "GitHubCopilotService", "CodeiumService"]
+            targets: ["SuggestionProvider", "GitHubCopilotService", "CodeiumService", "CustomSuggestion"]
         ),
         .library(
             name: "AppMonitoring",
@@ -87,6 +87,9 @@ let package = Package(
         // TreeSitter
         .package(url: "https://github.com/intitni/SwiftTreeSitter.git", branch: "main"),
         .package(url: "https://github.com/lukepistrol/tree-sitter-objc", branch: "feature/spm"),
+
+        .package(url: "https://github.com/krzyzanowskim/STTextView", branch: "0.9.0"),
+//        .package(url: "https://github.com/google/generative-ai-swift", from: "0.4.4"),
     ],
     targets: [
         // MARK: - Helpers
@@ -439,6 +442,12 @@ let package = Package(
                 "SharedUIComponents",
                 .product(name: "JSONRPC", package: "JSONRPC"),
                 .product(name: "CopilotForXcodeKit", package: "CopilotForXcodeKit"),
+                .product(name: "STTextView", package: "STTextView"),
+//                .product(name: "STTextViewUI", package: "STTextView"),
+                .product(name: "GoogleGenerativeAI", package: "generative-ai-swift"),
+                .product(name: "CodableWrappers", package: "CodableWrappers"),
+                .product(name: "Dependencies", package: "swift-dependencies"),
+                .product(name: "Parsing", package: "swift-parsing"),
             ]
         ),
         .testTarget(

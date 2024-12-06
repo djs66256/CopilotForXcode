@@ -1,5 +1,5 @@
 import Foundation
-import Fundamental
+//import Fundamental
 import GoogleGenerativeAI
 
 public struct GoogleGeminiService {

@@ -1,6 +1,6 @@
 import CopilotForXcodeKit
 import Foundation
-import Fundamental
+//import Fundamental
 
 actor TabbyService {
     enum AuthorizationMode {

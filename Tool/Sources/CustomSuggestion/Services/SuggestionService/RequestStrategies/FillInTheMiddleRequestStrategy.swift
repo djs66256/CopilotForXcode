@@ -1,7 +1,7 @@
-import CodeCompletionService
+//import CodeCompletionService
 import CopilotForXcodeKit
 import Foundation
-import Fundamental
+//import Fundamental
 
 /// https://ollama.com/library/codellama
 struct FillInTheMiddleRequestStrategy: RequestStrategy {

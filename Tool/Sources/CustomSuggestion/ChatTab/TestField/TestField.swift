@@ -1,8 +1,8 @@
 import ComposableArchitecture
 import CopilotForXcodeKit
 import Foundation
-import Fundamental
-import Storage
+//import Fundamental
+//import Storage
 
 @Reducer
 struct TestField {
@@ -56,8 +56,8 @@ struct TestField {
     @Dependency(\.toast) var toast
 
     let workspace = WorkspaceInfo(
-        workspaceURL: .init(filePath: "/"),
-        projectURL: .init(filePath: "/")
+        workspaceURL: URL(fileURLWithPath: "/"),
+        projectURL: URL(fileURLWithPath: "/")
     )
 
     enum CancellationID: Hashable {
@@ -83,7 +83,7 @@ struct TestField {
                 state.cursorPosition = position
                 return .run { send in
                     await send(.cancelSuggestion)
-                    try await Task.sleep(for: .milliseconds(400))
+                    try await Task.sleep(nanoseconds: 400_000_000)
                     await send(.generateSuggestion)
                 }.cancellable(id: CancellationID.textChanged, cancelInFlight: true)
 

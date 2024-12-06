@@ -1,6 +1,6 @@
 import Foundation
-import Fundamental
-import Storage
+//import Fundamental
+//import Storage
 
 protocol CodeCompletionServiceType {
     associatedtype CompletionSequence: AsyncSequence where CompletionSequence.Element == String

@@ -1,7 +1,7 @@
-import CodeCompletionService
+//import CodeCompletionService
 import CopilotForXcodeKit
 import Foundation
-import Fundamental
+//import Fundamental
 
 /// A special strategy for FIM endpoints.
 struct FIMEndpointRequestStrategy: RequestStrategy {

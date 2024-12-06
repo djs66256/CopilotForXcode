@@ -1,6 +1,6 @@
 import Foundation
 import os.log
-
+/*
 enum LogLevel: String {
     case debug
     case info
@@ -137,3 +137,4 @@ public final class Logger {
     }
 }
 
+*/

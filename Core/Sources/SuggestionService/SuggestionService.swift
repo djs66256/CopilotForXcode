@@ -1,4 +1,5 @@
 import BuiltinExtension
+import CustomSuggestion
 import CodeiumService
 import enum CopilotForXcodeKit.SuggestionServiceError
 import struct CopilotForXcodeKit.WorkspaceInfo
@@ -39,8 +40,7 @@ public actor SuggestionService: SuggestionServiceType {
     }
 
     public static func service(
-        for serviceType: SuggestionFeatureProvider = UserDefaults.shared
-            .value(for: \.suggestionFeatureProvider)
+        for serviceType: SuggestionFeatureProvider = UserDefaults.shared.value(for: \.suggestionFeatureProvider)
     ) -> SuggestionService {
         #if canImport(ProExtension)
         if let provider = ProExtension.suggestionProviderFactory(serviceType) {
@@ -57,6 +57,11 @@ public actor SuggestionService: SuggestionServiceType {
         case .builtIn(.gitHubCopilot), .extension:
             let provider = BuiltinExtensionSuggestionServiceProvider(
                 extension: GitHubCopilotExtension.self
+            )
+            return SuggestionService(provider: provider)
+        case .builtIn(.custom):
+            let provider = BuiltinExtensionSuggestionServiceProvider(
+                extension: CustomSuggestionExtension.self
             )
             return SuggestionService(provider: provider)
         }

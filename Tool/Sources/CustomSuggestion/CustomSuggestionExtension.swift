@@ -14,24 +14,24 @@ import Workspace
 public final class CustomSuggestionExtension: BuiltinExtension {
     public var extensionIdentifier: String { "com.custom_suggestion" }
 
-    public let suggestionService: CodeiumSuggestionService
+//    public let suggestionService: CodeiumSuggestionService
 
     public var chatTabTypes: [any CustomChatTab] {
-        [TypedCustomChatTab(of: CodeiumChatTab.self)]
+        []
     }
 
     private var extensionUsage = ExtensionUsage(
         isSuggestionServiceInUse: false,
         isChatServiceInUse: false
     )
-//    private var isLanguageServerInUse: Bool {
-//        get async {
-//            let lifeKeeperIsAlive = await CodeiumServiceLifeKeeper.shared.isAlive
-//            return extensionUsage.isSuggestionServiceInUse
-//                || extensionUsage.isChatServiceInUse
-//                || lifeKeeperIsAlive
-//        }
-//    }
+    private var isLanguageServerInUse: Bool {
+        get async {
+            let lifeKeeperIsAlive = await CustomSuggestionServiceLifeKeeper.shared.isAlive
+            return extensionUsage.isSuggestionServiceInUse
+                || extensionUsage.isChatServiceInUse
+                || lifeKeeperIsAlive
+        }
+    }
 
     let workspacePool: WorkspacePool
 
@@ -40,7 +40,7 @@ public final class CustomSuggestionExtension: BuiltinExtension {
     public init(workspacePool: WorkspacePool) {
         self.workspacePool = workspacePool
         serviceLocator = .init(workspacePool: workspacePool)
-        suggestionService = .init(serviceLocator: serviceLocator)
+//        suggestionService = .init(serviceLocator: serviceLocator)
     }
 
     public func workspaceDidOpen(_ workspace: WorkspaceInfo) {
@@ -50,7 +50,7 @@ public final class CustomSuggestionExtension: BuiltinExtension {
                 guard let service = await serviceLocator.getService(from: workspace) else { return }
                 try await service.notifyOpenWorkspace(workspaceURL: workspace.workspaceURL)
             } catch {
-                Logger.codeium.error(error.localizedDescription)
+                Logger.customSuggestion.error(error.localizedDescription)
             }
         }
     }
@@ -62,7 +62,7 @@ public final class CustomSuggestionExtension: BuiltinExtension {
                 guard let service = await serviceLocator.getService(from: workspace) else { return }
                 try await service.notifyCloseWorkspace(workspaceURL: workspace.workspaceURL)
             } catch {
-                Logger.codeium.error(error.localizedDescription)
+                Logger.customSuggestion.error(error.localizedDescription)
             }
         }
     }
@@ -82,7 +82,7 @@ public final class CustomSuggestionExtension: BuiltinExtension {
                 guard let service = await serviceLocator.getService(from: workspace) else { return }
                 try await service.notifyOpenTextDocument(fileURL: documentURL, content: content)
             } catch {
-                Logger.codeium.error(error.localizedDescription)
+                Logger.customSuggestion.error(error.localizedDescription)
             }
         }
     }
@@ -98,7 +98,7 @@ public final class CustomSuggestionExtension: BuiltinExtension {
                 guard let service = await serviceLocator.getService(from: workspace) else { return }
                 try await service.notifyCloseTextDocument(fileURL: documentURL)
             } catch {
-                Logger.codeium.error(error.localizedDescription)
+                Logger.customSuggestion.error(error.localizedDescription)
             }
         }
     }
@@ -120,13 +120,13 @@ public final class CustomSuggestionExtension: BuiltinExtension {
                 guard let content else { return }
                 guard let service = await serviceLocator.getService(from: workspace) else { return }
                 try await service.notifyChangeTextDocument(fileURL: documentURL, content: content)
-                try await service.refreshIDEContext(
-                    fileURL: documentURL,
-                    content: content,
-                    cursorPosition: .zero,
-                    tabSize: 4, indentSize: 4, usesTabsForIndentation: false,
-                    workspaceURL: workspace.workspaceURL
-                )
+//                try await service.refreshIDEContext(
+//                    fileURL: documentURL,
+//                    content: content,
+//                    cursorPosition: .zero,
+//                    tabSize: 4, indentSize: 4, usesTabsForIndentation: false,
+//                    workspaceURL: workspace.workspaceURL
+//                )
             } catch {
                 Logger.codeium.error(error.localizedDescription)
             }
@@ -144,7 +144,7 @@ public final class CustomSuggestionExtension: BuiltinExtension {
 
     public func terminate() {
         for workspace in workspacePool.workspaces.values {
-            guard let plugin = workspace.plugin(for: CodeiumWorkspacePlugin.self)
+            guard let plugin = workspace.plugin(for: CustomSuggestionWorkspacePlugin.self)
             else { continue }
             plugin.terminate()
         }
@@ -158,18 +158,18 @@ final class ServiceLocator {
         self.workspacePool = workspacePool
     }
 
-    func getService(from workspace: WorkspaceInfo) async -> CodeiumService? {
+    func getService(from workspace: WorkspaceInfo) async -> SuggestionService? {
         guard let workspace = workspacePool.workspaces[workspace.workspaceURL],
-              let plugin = workspace.plugin(for: CodeiumWorkspacePlugin.self)
+              let plugin = workspace.plugin(for: CustomSuggestionWorkspacePlugin.self)
         else { return nil }
-        return await plugin.codeiumService
+        return await plugin.customSuggestionService
     }
 }
 
 /// A helper class to keep track of a list of items that may keep the service alive.
 /// For example, a ``CodeiumChatTab``.
 actor CustomSuggestionServiceLifeKeeper {
-    static let shared = CodeiumServiceLifeKeeper()
+    static let shared = CustomSuggestionServiceLifeKeeper()
 
     private final class WeakObject {
         weak var object: AnyObject?

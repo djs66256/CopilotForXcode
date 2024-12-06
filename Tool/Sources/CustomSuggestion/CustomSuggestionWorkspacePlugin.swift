@@ -3,49 +3,41 @@ import Logger
 import Workspace
 
 public final class CustomSuggestionWorkspacePlugin: WorkspacePlugin {
-    private var _codeiumService: CodeiumService?
-    @CodeiumActor
-    var codeiumService: CodeiumService? {
-        if let service = _codeiumService { return service }
+    private var _customSuggestionService: SuggestionService?
+    @CustomSuggestionActor
+    var customSuggestionService: SuggestionService? {
+        if let service = _customSuggestionService { return service }
         do {
             return try createCodeiumService()
         } catch {
-            Logger.codeium.error("Failed to create Codeium service: \(error)")
+            Logger.customSuggestion.error("Failed to create CustomSuggestion service: \(error)")
             return nil
         }
     }
 
     deinit {
-        if let _codeiumService {
-            _codeiumService.terminate()
+        if let _customSuggestionService {
+            _customSuggestionService.terminate()
         }
     }
 
-    @CodeiumActor
-    func createCodeiumService() throws -> CodeiumService {
-        let newService = try CodeiumService(
-            projectRootURL: projectRootURL,
-            onServiceLaunched: {
-
-            },
-            onServiceTerminated: {
-                // start handled in the service.
-            }
-        )
-        _codeiumService = newService
+    @CustomSuggestionActor
+    func createCodeiumService() throws -> SuggestionService {
+        let newService = SuggestionService()
+        _customSuggestionService = newService
         return newService
     }
 
-    @CodeiumActor
+    @CustomSuggestionActor
     func finishLaunchingService() {
-        guard let workspace, let _codeiumService else { return }
+        guard let workspace, let _customSuggestionService else { return }
         Task {
-            try? await _codeiumService.notifyOpenWorkspace(workspaceURL: workspaceURL)
-            
+            try? await _customSuggestionService.notifyOpenWorkspace(workspaceURL: workspaceURL)
+
             for (_, filespace) in workspace.filespaces {
                 let documentURL = filespace.fileURL
                 guard let content = try? String(contentsOf: documentURL) else { continue }
-                try? await _codeiumService.notifyOpenTextDocument(
+                try? await _customSuggestionService.notifyOpenTextDocument(
                     fileURL: documentURL,
                     content: content
                 )
@@ -54,7 +46,7 @@ public final class CustomSuggestionWorkspacePlugin: WorkspacePlugin {
     }
 
     func terminate() {
-        _codeiumService = nil
+        _customSuggestionService = nil
     }
 }
 

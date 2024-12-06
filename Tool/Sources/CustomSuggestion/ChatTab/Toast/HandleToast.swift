@@ -1,4 +1,5 @@
 import Dependencies
+import Toast
 import SwiftUI
 
 struct ToastHandler: View {

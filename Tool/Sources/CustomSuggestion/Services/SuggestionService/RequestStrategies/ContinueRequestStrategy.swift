@@ -1,7 +1,7 @@
-import CodeCompletionService
+//import CodeCompletionService
 import CopilotForXcodeKit
 import Foundation
-import Fundamental
+//import Fundamental
 
 /// This strategy tries to fool the AI model that it has generated a part of the response but fail
 /// to complete because of token limit. The strategy will append a user message "Continue" to let

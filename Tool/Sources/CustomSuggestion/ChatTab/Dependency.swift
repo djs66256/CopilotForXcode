@@ -1,15 +1,15 @@
 import CopilotForXcodeKit
 import Dependencies
-import SuggestionService
+//import SuggestionService
 
 // MARK: - SuggestionService
 
 struct SuggestionServiceDependencyKey: DependencyKey {
-    static var liveValue: SuggestionServiceType = SuggestionService()
-    static var previewValue: SuggestionServiceType = MockSuggestionService()
+    static var liveValue: CopilotForXcodeKit.SuggestionServiceType = SuggestionService()
+    static var previewValue: CopilotForXcodeKit.SuggestionServiceType = MockSuggestionService()
 }
 
-struct MockSuggestionService: SuggestionServiceType {
+struct MockSuggestionService: CopilotForXcodeKit.SuggestionServiceType {
     var configuration: SuggestionServiceConfiguration {
         .init(
             acceptsRelevantCodeSnippets: true,
@@ -39,7 +39,7 @@ struct MockSuggestionService: SuggestionServiceType {
 }
 
 extension DependencyValues {
-    var suggestionService: SuggestionServiceType {
+    var suggestionService: CopilotForXcodeKit.SuggestionServiceType {
         get { self[SuggestionServiceDependencyKey.self] }
         set { self[SuggestionServiceDependencyKey.self] = newValue }
     }
