@@ -4,7 +4,6 @@ import Foundation
 
 public class CustomSuggestionService: SuggestionServiceType {
 
-
     let locator: ServiceLocator
     init(locator: ServiceLocator) {
         self.locator = locator

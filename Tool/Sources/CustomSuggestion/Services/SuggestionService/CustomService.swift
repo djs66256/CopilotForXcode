@@ -3,7 +3,7 @@ import CopilotForXcodeKit
 import Foundation
 //import Fundamental
 
-actor CustomService {
+public actor CustomService {
     enum Model {
         case chatModel(ChatModel)
         case completionModel(CompletionModel)
@@ -13,12 +13,14 @@ actor CustomService {
 
     var onGoingTask: Task<[CodeSuggestion], Error>?
 
-    func cancelRequest() {
+    public init() { }
+
+    public func cancelRequest() {
         onGoingTask?.cancel()
         onGoingTask = nil
     }
 
-    func getSuggestions(
+    public func getSuggestions(
         _ request: SuggestionRequest,
         workspace: WorkspaceInfo
     ) async throws -> [CodeSuggestion] {
