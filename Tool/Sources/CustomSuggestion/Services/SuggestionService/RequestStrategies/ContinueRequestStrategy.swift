@@ -168,7 +168,7 @@ struct ContinueRequestStrategy: RequestStrategy {
             }()
 
             return (
-                summary: "\(prefixLines.joined())\(Tag.openingCode)\(Tag.closingCode)\(truncatedSuffix.joined())",
+                summary: "\(prefixLines.joined())\(Tag.openingCode)\(truncatedSuffix.joined())\(Tag.closingCode)",
                 infillBlock: promptLines.joined()
             )
         }
