@@ -177,6 +177,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		655C204F2D1E45870014857E /* SocketIPC */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = SocketIPC; sourceTree = "<group>"; };
 		C8009BFE2941C551007AA7E8 /* ToggleRealtimeSuggestionsCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleRealtimeSuggestionsCommand.swift; sourceTree = "<group>"; };
 		C8009C022941C576007AA7E8 /* RealtimeSuggestionCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealtimeSuggestionCommand.swift; sourceTree = "<group>"; };
 		C800DBB0294C624D00B04CAC /* PrefetchSuggestionsCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrefetchSuggestionsCommand.swift; sourceTree = "<group>"; };
@@ -342,6 +343,7 @@
 				C81458AE293A009800135263 /* Config.debug.xcconfig */,
 				C8CD828229B88006008D044D /* TestPlan.xctestplan */,
 				C828B27D2B1F241500E7612A /* ExtensionPoint.appextensionpoint */,
+				655C204F2D1E45870014857E /* SocketIPC */,
 				C84FD9D72CC671C600BE5093 /* ChatPlugins */,
 				C81D181E2A1B509B006C1B70 /* Tool */,
 				C8189B282938979000C9DCDA /* Core */,
