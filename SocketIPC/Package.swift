@@ -31,7 +31,7 @@ let package = Package(
             dependencies: [
                 .product(name: "SocketIO", package: "socket.io-client-swift")
             ]),
-        .target(
+        .executableTarget(
             name: "SocketIPCHostApp",
             dependencies: [
                 "SocketIPC",
