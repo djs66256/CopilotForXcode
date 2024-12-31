@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "SocketIPC",
     platforms: [
-        .macOS(.v12)
+        .macOS(.v13)
     ],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
@@ -14,9 +14,9 @@ let package = Package(
             name: "SocketIPC",
             targets: ["SocketIPC"]),
         .executable(
-            name: "HostApp",
+            name: "SocketIPCHostApp",
             targets: [
-                "HostApp"
+                "SocketIPCHostApp"
             ])
     ],
     dependencies: [
@@ -32,7 +32,7 @@ let package = Package(
                 .product(name: "SocketIO", package: "socket.io-client-swift")
             ]),
         .target(
-            name: "HostApp",
+            name: "SocketIPCHostApp",
             dependencies: [
                 "SocketIPC",
                 .product(name: "ArgumentParser", package: "swift-argument-parser")
@@ -41,6 +41,6 @@ let package = Package(
             name: "SocketIPCTests",
             dependencies: ["SocketIPC"]
         ),
-    ],
-    swiftLanguageModes: [.v6]
+    ]
+//    swiftLanguageModes: [.v6]
 )

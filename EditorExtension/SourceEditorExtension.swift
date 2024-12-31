@@ -2,6 +2,7 @@ import Client
 import Foundation
 import Preferences
 import XcodeKit
+import SocketIPC
 
 #if canImport(PreferencesPlus)
 import PreferencesPlus
@@ -54,6 +55,7 @@ class SourceEditorExtension: NSObject, XCSourceEditorExtension {
         return builtin + optional + custom + internalUse
     }
 
+    var client: SocketIPCClient?
     func extensionDidFinishLaunching() {
         #if DEBUG
         // In a debug build, we usually want to use the XPC service run from Xcode.
@@ -66,6 +68,12 @@ class SourceEditorExtension: NSObject, XCSourceEditorExtension {
             _ = try await service.getXPCServiceVersion()
         }
         #endif
+
+        DispatchQueue.main.async {
+            let url = URL(string: "http://localhost:56567")!
+            self.client = SocketIPCClient(url: url)
+            self.client?.start()
+        }
     }
 }
 

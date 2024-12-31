@@ -61,6 +61,7 @@ public class SocketIPCClient {
     }
 
     public func start() {
+        logger.debug("Socket IPC start connect")
         // we will reconnect after 0.5s
         socket.connect(timeoutAfter: 0.5) {
 
