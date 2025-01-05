@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		651BC1D22D23D5FB00EDE20D /* SocketIPC in Frameworks */ = {isa = PBXBuildFile; productRef = 651BC1D12D23D5FB00EDE20D /* SocketIPC */; };
+		65A3DA7F2D2ADEC600CA011C /* SocketIPCClient+shared.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A3DA7E2D2ADEBE00CA011C /* SocketIPCClient+shared.swift */; };
 		C8009BFF2941C551007AA7E8 /* ToggleRealtimeSuggestionsCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8009BFE2941C551007AA7E8 /* ToggleRealtimeSuggestionsCommand.swift */; };
 		C8009C032941C576007AA7E8 /* RealtimeSuggestionCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8009C022941C576007AA7E8 /* RealtimeSuggestionCommand.swift */; };
 		C800DBB1294C624D00B04CAC /* PrefetchSuggestionsCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = C800DBB0294C624D00B04CAC /* PrefetchSuggestionsCommand.swift */; };
@@ -179,6 +180,7 @@
 
 /* Begin PBXFileReference section */
 		655C204F2D1E45870014857E /* SocketIPC */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = SocketIPC; sourceTree = "<group>"; };
+		65A3DA7E2D2ADEBE00CA011C /* SocketIPCClient+shared.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SocketIPCClient+shared.swift"; sourceTree = "<group>"; };
 		C8009BFE2941C551007AA7E8 /* ToggleRealtimeSuggestionsCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleRealtimeSuggestionsCommand.swift; sourceTree = "<group>"; };
 		C8009C022941C576007AA7E8 /* RealtimeSuggestionCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealtimeSuggestionCommand.swift; sourceTree = "<group>"; };
 		C800DBB0294C624D00B04CAC /* PrefetchSuggestionsCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrefetchSuggestionsCommand.swift; sourceTree = "<group>"; };
@@ -310,6 +312,7 @@
 		C81458922939EFDC00135263 /* EditorExtension */ = {
 			isa = PBXGroup;
 			children = (
+				65A3DA7E2D2ADEBE00CA011C /* SocketIPCClient+shared.swift */,
 				C81458932939EFDC00135263 /* SourceEditorExtension.swift */,
 				C8758E7129F04CF100D29C1C /* SeparatorCommand.swift */,
 				C8520300293C4D9000460097 /* Helpers.swift */,
@@ -691,6 +694,7 @@
 				C80FFB962A95F58200704A25 /* AcceptPromptToCodeCommand.swift in Sources */,
 				C87B03A5293B261200C77EAE /* AcceptSuggestionCommand.swift in Sources */,
 				C87B03A9293B262600C77EAE /* NextSuggestionCommand.swift in Sources */,
+				65A3DA7F2D2ADEC600CA011C /* SocketIPCClient+shared.swift in Sources */,
 				C87B03AB293B262E00C77EAE /* PreviousSuggestionCommand.swift in Sources */,
 				C87B03A7293B261900C77EAE /* RejectSuggestionCommand.swift in Sources */,
 				C8009C032941C576007AA7E8 /* RealtimeSuggestionCommand.swift in Sources */,

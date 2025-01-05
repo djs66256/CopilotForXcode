@@ -12,12 +12,27 @@ import Network
 
 fileprivate let logger = Logger(subsystem: "com.socket_ipc", category: "client")
 
+public struct ProjectToken: Codable, Sendable {
+    public let type: String
+    public let id: String
+    
+    init(type: String, id: String = UUID().uuidString) {
+        self.type = type
+        self.id = id
+    }
+    
+    public static let extensionToken = ProjectToken(type: "extension")
+    public static let inspectorToken = ProjectToken(type: "inspector")
+}
+
 public class SocketIPCClient {
+    let projectToken: ProjectToken
     let url: URL
     let manager: SocketManager
     var socket: SocketIOClient
 
-    public init(url: URL) {
+    public init(projectToken: ProjectToken, url: URL = URL(string: "http://localhost:56567")!) {
+        self.projectToken = projectToken
         self.url = url
 
         manager = SocketManager(socketURL: url, config: [.log(true), .forceWebsockets(true)])
@@ -48,6 +63,14 @@ public class SocketIPCClient {
         socket.on(clientEvent: .error) { data, _ in
             logger.debug("IPC error: \(data)")
         }
+        
+        socket.on("whoareyou") { [weak self] _, ack in
+            guard let self else { return }
+            logger.debug("IPC who are you.")
+            let encoder = JSONEncoder()
+            let data = encoder.encode(self.projectToken)
+            ack.with(data)
+        }
 
         socket.on("ipc") { data, ack in
             logger.debug("IPC receive message: \(data)")
@@ -59,6 +82,8 @@ public class SocketIPCClient {
         }
 
     }
+    
+    
 
     public func start() {
         logger.debug("Socket IPC start connect")

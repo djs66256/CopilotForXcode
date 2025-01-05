@@ -70,9 +70,7 @@ class SourceEditorExtension: NSObject, XCSourceEditorExtension {
         #endif
 
         DispatchQueue.main.async {
-            let url = URL(string: "http://localhost:56567")!
-            self.client = SocketIPCClient(url: url)
-            self.client?.start()
+            SocketIPCClient.shared.start()
         }
     }
 }
