@@ -15,12 +15,12 @@ fileprivate let logger = Logger(subsystem: "com.socket_ipc", category: "client")
 public struct ProjectToken: Codable, Sendable {
     public let type: String
     public let id: String
-    
+
     init(type: String, id: String = UUID().uuidString) {
         self.type = type
         self.id = id
     }
-    
+
     public static let extensionToken = ProjectToken(type: "extension")
     public static let inspectorToken = ProjectToken(type: "inspector")
 }
@@ -63,13 +63,17 @@ public class SocketIPCClient {
         socket.on(clientEvent: .error) { data, _ in
             logger.debug("IPC error: \(data)")
         }
-        
+
         socket.on("whoareyou") { [weak self] _, ack in
             guard let self else { return }
             logger.debug("IPC who are you.")
-            let encoder = JSONEncoder()
-            let data = encoder.encode(self.projectToken)
-            ack.with(data)
+            do {
+                let encoder = JSONEncoder()
+                let data = try encoder.encode(self.projectToken)
+                ack.with(data)
+            } catch {
+
+            }
         }
 
         socket.on("ipc") { data, ack in
@@ -82,8 +86,6 @@ public class SocketIPCClient {
         }
 
     }
-    
-    
 
     public func start() {
         logger.debug("Socket IPC start connect")
