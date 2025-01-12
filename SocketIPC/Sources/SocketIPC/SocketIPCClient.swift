@@ -10,6 +10,24 @@ import Foundation
 import SocketIO
 import Network
 
+struct Message<T: Codable>: Codable {
+    let messageId: String
+    let messageType: String
+    let data: T
+    
+    init(messageId: String = UUID().uuidString, messageType: String, data: T) {
+        self.messageId = messageId
+        self.messageType = messageType
+        self.data = data
+    }
+}
+
+public protocol IPCProtocol {
+    associatedtype FromType: Codable
+    associatedtype ToType: Codable
+    static var messageType: String { get }
+}
+
 fileprivate let logger = Logger(subsystem: "com.socket_ipc", category: "client")
 
 public struct ProjectToken: Codable, Sendable {
@@ -25,7 +43,15 @@ public struct ProjectToken: Codable, Sendable {
     public static let inspectorToken = ProjectToken(type: "inspector")
 }
 
+enum SocketIPCClientError: Error {
+    case unknow
+    case timeout
+}
+
 public class SocketIPCClient {
+    static let jsonEncoder = JSONEncoder()
+    static let jsonDecoder = JSONDecoder()
+    
     let projectToken: ProjectToken
     let url: URL
     let manager: SocketManager
@@ -68,8 +94,7 @@ public class SocketIPCClient {
             guard let self else { return }
             logger.debug("IPC who are you.")
             do {
-                let encoder = JSONEncoder()
-                let data = try encoder.encode(self.projectToken)
+                let data = try Self.jsonEncoder.encode(self.projectToken)
                 ack.with(data)
             } catch {
 
@@ -97,5 +122,86 @@ public class SocketIPCClient {
 
     public func stop() {
         socket.disconnect()
+    }
+    
+    private func request(_ data: Data, _ callback: @escaping (Data?, Error?) -> Void) {
+        socket.emitWithAck("message", data).timingOut(after: 10) { datas in
+            if datas.count == 1, let data = datas.first as? Data {
+                callback(data, nil)
+            } else {
+                callback(nil, SocketIPCClientError.timeout)
+            }
+        }
+    }
+    
+    private func request(_ message: Data) async throws -> Data {
+        try await withCheckedThrowingContinuation { continuation in
+            request(message) { data, error in
+                if let data {
+                    continuation.resume(returning: data)
+                } else {
+                    continuation.resume(throwing: error ?? SocketIPCClientError.unknow)
+                }
+            }
+        }
+    }
+    
+    public func request<IPC: IPCProtocol>(_ protocolType: IPC.Type, data: IPC.FromType) async throws -> IPC.ToType {
+        let messageType = protocolType.messageType
+        let message = Message(messageType: messageType, data: data)
+        let data = try Self.jsonEncoder.encode(message)
+        let response = try await request(data)
+        let responseMessage = try Self.jsonDecoder.decode(IPC.ToType.self, from: response)
+        return responseMessage
+    }
+    
+    public struct Request<IPC: IPCProtocol>: @unchecked Sendable {
+        let message: IPC.FromType
+        let response: (IPC.ToType) -> Void
+//        @preconcurrency let ackEmitter: SocketAckEmitter
+//        func response(_ message: IPC.ToType) {
+//            
+//        }
+    }
+    
+    private func onMessage(data: Data) {
+        
+    }
+    
+    func on(_ messageType: String, _ callback: @escaping NormalCallback) {
+        socket.on(messageType, callback: callback)
+    }
+    
+    public func on<IPC: IPCProtocol>(_ protocolType: IPC.Type,
+                                     _ callback: (Request<IPC>) -> Void) {
+        let messageType = protocolType.messageType
+        on(messageType) { datas, ack in
+            
+//            let request = Request(message: <#T##Decodable & Encodable#>, ackEmitter: <#T##SocketAckEmitter#>)
+        }
+    }
+    
+    public func on<IPC: IPCProtocol>(_ protocolType: IPC.Type) throws -> AsyncStream<Request<IPC>> {
+        let messageType = protocolType.messageType
+        return AsyncStream { continuation in
+            self.on(messageType) { datas, ack in
+                do {
+                    if datas.count == 1, let data = datas.first as? Data {
+                        let message = try Self.jsonDecoder.decode(IPC.FromType.self, from: data)
+                        let request = Request<IPC>(message: message) { to in
+                            do {
+                                let data = try Self.jsonEncoder.encode(to)
+                                ack.with(data)
+                            } catch {
+                                
+                            }
+                        }
+                        continuation.yield(request)
+                    }
+                } catch {
+                    
+                }
+            }
+        }
     }
 }
