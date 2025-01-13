@@ -3,6 +3,7 @@ import SuggestionBasic
 import SuggestionProvider
 import Workspace
 import XPCShared
+import SocketIPC
 
 public extension Workspace {
     var suggestionPlugin: SuggestionServiceWorkspacePlugin? {
@@ -55,6 +56,27 @@ public extension Workspace {
 
         guard let suggestionService else { throw SuggestionFeatureDisabledError() }
         let content = editor.lines.joined(separator: "")
+
+        // ========= Replace to IPC ==========
+        let completionId = UUID().uuidString
+        let pos = editor.cursorPosition
+        let request = GetSuggestion.Request(
+            project: Project(id: "test", documentUrl: projectRootURL.path(percentEncoded: false)),
+            isUntitledFile: false,
+            completionId: completionId,
+            filepath: fileURL.path(percentEncoded: false),
+            pos: Position(line: pos.line, character: pos.character),
+            recentlyEditedFiles: [],
+            recentlyEditedRanges: [],
+            manuallyPassFileContents: nil,
+            selectedCompletionInfo: nil,
+            injectDetails: nil
+        )
+        let response = try await SocketIPCClient.shared.request(GetSuggestion.self, data: request)
+
+        print("\(response)")
+
+        // ====================================
         let completions = try await suggestionService.getSuggestions(
             .init(
                 fileURL: fileURL,

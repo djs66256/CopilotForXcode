@@ -12,6 +12,7 @@ import UserDefaultsObserver
 import UserNotifications
 import XcodeInspector
 import XPCShared
+import SocketIPC
 
 let bundleIdentifierBase = Bundle.main
     .object(forInfoDictionaryKey: "BUNDLE_IDENTIFIER_BASE") as! String
@@ -44,6 +45,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         Logger.service.info("XPC Service started.")
         NSApp.setActivationPolicy(.accessory)
         buildStatusBarMenu()
+
+        SocketIPCClient.shared.start()
 
         Task {
             do {

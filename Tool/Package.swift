@@ -60,6 +60,7 @@ let package = Package(
         ),
     ],
     dependencies: [
+        .package(path: "../SocketIPC"),
         // A fork of https://github.com/aespinilla/Tiktoken to allow loading from local files.
         .package(url: "https://github.com/intitni/Tiktoken", branch: "main"),
         // TODO: Update LanguageClient some day.
@@ -326,6 +327,7 @@ let package = Package(
                 "XPCShared",
                 "BuiltinExtension",
                 "SuggestionInjector",
+                "SocketIPC"
             ]
         ),
 
