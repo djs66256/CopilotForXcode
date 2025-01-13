@@ -130,18 +130,19 @@ public class SocketIPCClient: @unchecked Sendable {
         }
     }
 
-    public func request<IPC: IPCProtocol>(_ protocolType: IPC.Type, data: IPC.FromType) async throws -> IPC.ToType {
+    public func request<IPC: IPCProtocol>(_ protocolType: IPC.Type,
+                                          data: IPC.RequestType) async throws -> IPC.ResponseType {
         let messageType = protocolType.messageType
         let message = Message(messageType: messageType, data: data)
         let data = try Self.jsonEncoder.encode(message)
         let response = try await request(data)
-        let responseMessage = try Self.jsonDecoder.decode(IPC.ToType.self, from: response)
+        let responseMessage = try Self.jsonDecoder.decode(IPC.ResponseType.self, from: response)
         return responseMessage
     }
 
     public struct Request<IPC: IPCProtocol>: @unchecked Sendable {
-        let message: IPC.FromType
-        let response: (IPC.ToType) -> Void
+        let message: IPC.RequestType
+        let response: (IPC.ResponseType) -> Void
     }
 
     func on(_ messageType: String, _ callback: @escaping NormalCallback) {
@@ -154,7 +155,7 @@ public class SocketIPCClient: @unchecked Sendable {
         on(messageType) { datas, ack in
             do {
                 if datas.count == 1, let data = datas.first as? Data {
-                    let message = try Self.jsonDecoder.decode(IPC.FromType.self, from: data)
+                    let message = try Self.jsonDecoder.decode(IPC.RequestType.self, from: data)
                     let request = Request<IPC>(message: message) { to in
                         do {
                             let data = try Self.jsonEncoder.encode(to)
@@ -179,7 +180,7 @@ public class SocketIPCClient: @unchecked Sendable {
                     self.on(messageType) { datas, ack in
                         do {
                             if datas.count == 1, let data = datas.first as? Data {
-                                let message = try Self.jsonDecoder.decode(IPC.FromType.self, from: data)
+                                let message = try Self.jsonDecoder.decode(IPC.RequestType.self, from: data)
                                 
                                 if Task.isCancelled { return }
                                 let request = Request<IPC>(message: message) { to in
