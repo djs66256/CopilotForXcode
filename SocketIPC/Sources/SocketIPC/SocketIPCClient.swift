@@ -138,10 +138,17 @@ public class SocketIPCClient: @unchecked Sendable {
         let error: String?
         let data: T?
     }
+    
+    struct ProjectRequest<T: Codable>: Codable {
+        let project: Project?
+        let message: T
+    }
 
     public func request<IPC: IPCProtocol>(_ protocolType: IPC.Type,
-                                          data: IPC.RequestType) async throws -> IPC.ResponseType {
-        let data = try Self.jsonEncoder.encode(data)
+                                          project: Project? = nil,
+                                          message: IPC.RequestType) async throws -> IPC.ResponseType {
+        let req = ProjectRequest(project: project, message: message)
+        let data = try Self.jsonEncoder.encode(req)
         let responseData = try await request(protocolType.messageType, data: data)
         let response = try Self.jsonDecoder.decode(Response<IPC.ResponseType>.self, from: responseData)
         if response.code == 0, let res = response.data {
@@ -152,6 +159,7 @@ public class SocketIPCClient: @unchecked Sendable {
     }
 
     public struct Request<IPC: IPCProtocol>: @unchecked Sendable {
+        let project: Project?
         let message: IPC.RequestType
         let response: (IPC.ResponseType) throws -> Void
     }
@@ -171,8 +179,8 @@ public class SocketIPCClient: @unchecked Sendable {
             }
             do {
                 if datas.count == 1, let data = datas.first as? Data {
-                    let message = try Self.jsonDecoder.decode(IPC.RequestType.self, from: data)
-                    let request = Request<IPC>(message: message) { to in
+                    let message = try Self.jsonDecoder.decode(ProjectRequest<IPC.RequestType>.self, from: data)
+                    let request = Request<IPC>(project: message.project, message: message.message) { to in
                         do {
                             let response = Response(code: 0, error: nil, data: to)
                             let data = try Self.jsonEncoder.encode(response)
