@@ -75,6 +75,7 @@ public extension Workspace {
         let response = try await SocketIPCClient.shared.request(GetSuggestion.self, data: request)
 
         print("\(response)")
+   
 
         // ====================================
         let completions = try await suggestionService.getSuggestions(

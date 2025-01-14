@@ -40,6 +40,8 @@ public struct ProjectToken: Codable, Sendable {
 enum SocketIPCClientError: Error {
     case unknow
     case timeout
+    case serverError(code: Int, error: String)
+    case clientError(code: Int, error: String)
 }
 
 public class SocketIPCClient: @unchecked Sendable {
@@ -108,8 +110,9 @@ public class SocketIPCClient: @unchecked Sendable {
         socket.disconnect()
     }
 
-    private func request(_ data: Data, _ callback: @escaping (Data?, Error?) -> Void) {
-        socket.emitWithAck("message", data).timingOut(after: 10) { datas in
+    private func request(_ messageType: String, data: Data, _ callback: @escaping (Data?, Error?) -> Void) {
+        let event = "xcode:\(messageType)"
+        socket.emitWithAck(event, data).timingOut(after: 10) { datas in
             if datas.count == 1, let data = datas.first as? Data {
                 callback(data, nil)
             } else {
@@ -118,9 +121,9 @@ public class SocketIPCClient: @unchecked Sendable {
         }
     }
 
-    private func request(_ message: Data) async throws -> Data {
+    private func request(_ messageType: String, data: Data) async throws -> Data {
         try await withCheckedThrowingContinuation { continuation in
-            request(message) { data, error in
+            request(messageType, data: data) { data, error in
                 if let data {
                     continuation.resume(returning: data)
                 } else {
@@ -130,19 +133,27 @@ public class SocketIPCClient: @unchecked Sendable {
         }
     }
 
+    struct Response<T: Codable>: Codable {
+        let code: Int
+        let error: String?
+        let data: T?
+    }
+
     public func request<IPC: IPCProtocol>(_ protocolType: IPC.Type,
                                           data: IPC.RequestType) async throws -> IPC.ResponseType {
-        let messageType = protocolType.messageType
-        let message = Message(messageType: messageType, data: data)
-        let data = try Self.jsonEncoder.encode(message)
-        let response = try await request(data)
-        let responseMessage = try Self.jsonDecoder.decode(IPC.ResponseType.self, from: response)
-        return responseMessage
+        let data = try Self.jsonEncoder.encode(data)
+        let responseData = try await request(protocolType.messageType, data: data)
+        let response = try Self.jsonDecoder.decode(Response<IPC.ResponseType>.self, from: responseData)
+        if response.code == 0, let res = response.data {
+            return res
+        } else {
+            throw SocketIPCClientError.serverError(code: response.code, error: response.error ?? "unknow")
+        }
     }
 
     public struct Request<IPC: IPCProtocol>: @unchecked Sendable {
         let message: IPC.RequestType
-        let response: (IPC.ResponseType) -> Void
+        let response: (IPC.ResponseType) throws -> Void
     }
 
     func on(_ messageType: String, _ callback: @escaping NormalCallback) {
@@ -150,21 +161,44 @@ public class SocketIPCClient: @unchecked Sendable {
     }
 
     public func on<IPC: IPCProtocol>(_ protocolType: IPC.Type,
-                                     _ callback: @escaping (Request<IPC>) -> Void) {
+                                     _ callback: @escaping (Request<IPC>) throws -> Void) {
         let messageType = protocolType.messageType
         on(messageType) { datas, ack in
+            func responseError(code: Int, error: String) {
+                let response = Response<String>(code: -1, error: "", data: nil)
+                let data = try? Self.jsonEncoder.encode(response)
+                ack.with(data ?? "")
+            }
             do {
                 if datas.count == 1, let data = datas.first as? Data {
                     let message = try Self.jsonDecoder.decode(IPC.RequestType.self, from: data)
                     let request = Request<IPC>(message: message) { to in
                         do {
-                            let data = try Self.jsonEncoder.encode(to)
+                            let response = Response(code: 0, error: nil, data: to)
+                            let data = try Self.jsonEncoder.encode(response)
                             ack.with(data)
                         } catch {
-
+                            throw SocketIPCClientError.clientError(code: -1, error: "data encoding error")
                         }
                     }
-                    callback(request)
+                    do {
+                        try callback(request)
+                    } catch let error as SocketIPCClientError {
+                        switch error {
+                        case .unknow:
+                            responseError(code: -1, error: "unknow")
+                        case .timeout:
+                            responseError(code: -999, error: "timeout")
+                        case .serverError(let code, let error):
+                            responseError(code: code, error: error)
+                        case .clientError(let code, let error):
+                            responseError(code: code, error: error)
+                        }
+                    } catch let error as NSError {
+                        responseError(code: error.code, error: error.localizedDescription)
+                    } catch {
+                        responseError(code: -1, error: error.localizedDescription)
+                    }
                 }
             } catch {
 
@@ -172,37 +206,37 @@ public class SocketIPCClient: @unchecked Sendable {
         }
     }
 
-    public func on<IPC: IPCProtocol>(_ protocolType: IPC.Type) -> AsyncStream<Request<IPC>> {
-        let messageType = protocolType.messageType
-        return AsyncStream { continuation in
-            Task {
-                await withTaskCancellationHandler {
-                    self.on(messageType) { datas, ack in
-                        do {
-                            if datas.count == 1, let data = datas.first as? Data {
-                                let message = try Self.jsonDecoder.decode(IPC.RequestType.self, from: data)
-                                
-                                if Task.isCancelled { return }
-                                let request = Request<IPC>(message: message) { to in
-                                    do {
-                                        let data = try Self.jsonEncoder.encode(to)
-                                        ack.with(data)
-                                    } catch {
-                                        
-                                    }
-                                }
-                                continuation.yield(request)
-                            }
-                        } catch {
-                            
-                        }
-                    }
-                } onCancel: {
-                    self.off(protocolType)
-                }
-            }
-        }
-    }
+//    public func on<IPC: IPCProtocol>(_ protocolType: IPC.Type) -> AsyncStream<Request<IPC>> {
+//        let messageType = protocolType.messageType
+//        return AsyncStream { continuation in
+//            Task {
+//                await withTaskCancellationHandler {
+//                    self.on(messageType) { datas, ack in
+//                        do {
+//                            if datas.count == 1, let data = datas.first as? Data {
+//                                let message = try Self.jsonDecoder.decode(IPC.RequestType.self, from: data)
+//                                
+//                                if Task.isCancelled { return }
+//                                let request = Request<IPC>(message: message) { to in
+//                                    do {
+//                                        let data = try Self.jsonEncoder.encode(to)
+//                                        ack.with(data)
+//                                    } catch {
+//                                        
+//                                    }
+//                                }
+//                                continuation.yield(request)
+//                            }
+//                        } catch {
+//                            
+//                        }
+//                    }
+//                } onCancel: {
+//                    self.off(protocolType)
+//                }
+//            }
+//        }
+//    }
 
     @preconcurrency
     public func off<IPC: IPCProtocol>(_ protocolType: IPC.Type) {
