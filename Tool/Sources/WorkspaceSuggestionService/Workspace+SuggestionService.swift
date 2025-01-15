@@ -60,6 +60,7 @@ public extension Workspace {
         // ========= Replace to IPC ==========
         let completionId = UUID().uuidString
         let pos = editor.cursorPosition
+        let project = Project(id: "test", documentUrl: projectRootURL.path(percentEncoded: false))
         let request = GetSuggestion.Request(
             project: Project(id: "test", documentUrl: projectRootURL.path(percentEncoded: false)),
             isUntitledFile: false,
@@ -72,10 +73,10 @@ public extension Workspace {
             selectedCompletionInfo: nil,
             injectDetails: nil
         )
-        let response = try await SocketIPCClient.shared.request(GetSuggestion.self, data: request)
+        let response = try await SocketIPCClient.shared.request(GetSuggestion.self, project: project, message: request)
 
         print("\(response)")
-   
+        
 
         // ====================================
         let completions = try await suggestionService.getSuggestions(
