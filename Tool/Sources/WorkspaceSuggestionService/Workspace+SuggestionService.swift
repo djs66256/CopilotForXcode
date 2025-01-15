@@ -65,7 +65,7 @@ public extension Workspace {
             project: Project(id: "test", documentUrl: projectRootURL.path(percentEncoded: false)),
             isUntitledFile: false,
             completionId: completionId,
-            filepath: fileURL.path(percentEncoded: false),
+            filepath: fileURL.absoluteString,
             pos: Position(line: pos.line, character: pos.character),
             recentlyEditedFiles: [],
             recentlyEditedRanges: [],
@@ -76,7 +76,7 @@ public extension Workspace {
         let response = try await SocketIPCClient.shared.request(GetSuggestion.self, project: project, message: request)
 
         print("\(response)")
-        
+
 
         // ====================================
         let completions = try await suggestionService.getSuggestions(

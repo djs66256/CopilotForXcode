@@ -150,6 +150,7 @@ public class SocketIPCClient: @unchecked Sendable {
         let req = ProjectRequest(project: project, message: message)
         let data = try Self.jsonEncoder.encode(req)
         let responseData = try await request(protocolType.messageType, data: data)
+        // let str = String(data: responseData, encoding: .utf8)
         let response = try Self.jsonDecoder.decode(Response<IPC.ResponseType>.self, from: responseData)
         if response.code == 0, let res = response.data {
             return res
