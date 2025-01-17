@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SuggestionBasic
 
 public struct RangeInFileWithContents: Codable, Sendable {
     public let filepath: String
@@ -78,13 +79,8 @@ public struct GetSuggestion: FromXcodeToCoreIPCProtocol {
         }
     }
 
-    public struct Response: Codable, Sendable {
-        let project: Project
-
-    }
-
     public typealias RequestType = Request
-    public typealias ResponseType = [String]
+    public typealias ResponseType = CodeSuggestion
 }
 
 struct AcceptSuggestion {
