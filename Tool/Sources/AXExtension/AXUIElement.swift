@@ -52,6 +52,14 @@ public extension AXUIElement {
         try? copyValue(key: kAXDocumentAttribute)
     }
 
+    var text: String? {
+        try? copyValue(key: kAXTextAttribute)
+    }
+
+    var visibleText: String? {
+        try? copyValue(key: kAXVisibleTextAttribute)
+    }
+
     /// Label in Accessibility Inspector.
     var description: String {
         (try? copyValue(key: kAXDescriptionAttribute)) ?? ""
