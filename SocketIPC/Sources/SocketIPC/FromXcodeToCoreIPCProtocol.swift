@@ -40,7 +40,7 @@ public struct SelectedCompletionInfo: Codable, Sendable {
 }
 
 public struct GetSuggestion: FromXcodeToCoreIPCProtocol {
-    public static var messageType: String { "autocomplete/complete" }
+    public static var messageType: String { "autocomplete/getSuggestion" }
 
     public struct Request: Codable, Sendable {
         public let project: Project
