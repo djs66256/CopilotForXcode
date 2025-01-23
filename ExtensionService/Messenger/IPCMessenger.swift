@@ -19,7 +19,7 @@ class IPCMessenger {
                 let info = workspace.info
                 print("\(info)")
                 print("\(element)")
-                if info.tabs.contains("MyView.swift") {
+                if info.tabs.contains("00-Core.swift") {
                     print(element)
                 }
             }
