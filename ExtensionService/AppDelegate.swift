@@ -46,7 +46,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         NSApp.setActivationPolicy(.accessory)
         buildStatusBarMenu()
 
-//        SocketIPCClient.shared.start()
+        SocketIPCClient.shared.start()
         Task {
             try? await Task.sleep(nanoseconds: 1_000_000_000)
             IPCMessenger.shared.setup()
