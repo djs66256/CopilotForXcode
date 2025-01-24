@@ -26,6 +26,10 @@ public extension Workspace {
 }
 
 public extension Workspace {
+    private var project: Project {
+        Project(id: "test", documentUrl: projectRootURL.path(percentEncoded: false))
+    }
+
     @WorkspaceActor
     @discardableResult
     func generateSuggestions(
@@ -61,9 +65,9 @@ public extension Workspace {
         // ========= Replace to IPC ==========
         let completionId = UUID().uuidString
         let pos = editor.cursorPosition
-        let project = Project(id: "test", documentUrl: projectRootURL.path(percentEncoded: false))
+        let project = self.project
         let request = GetSuggestion.Request(
-            project: Project(id: "test", documentUrl: projectRootURL.path(percentEncoded: false)),
+            project: project,
             document: editor,
             isUntitledFile: false,
             completionId: completionId,
@@ -75,7 +79,7 @@ public extension Workspace {
             selectedCompletionInfo: nil,
             injectDetails: nil
         )
-        let response = try await SocketIPCClient.shared.request(GetSuggestion.self, project: project, message: request)
+        let response = try await GetSuggestion.request(project: project, message: request)
 
         try Task.checkCancellation()
 
@@ -167,7 +171,17 @@ public extension Workspace {
         var allSuggestions = filespace.suggestions
         let suggestion = allSuggestions.remove(at: filespace.suggestionIndex)
 
+        let project = self.project
         Task {
+            do {
+                _ = try await AcceptSuggestion
+                    .request(project: project,
+                             message: .init(project: project, completionId: suggestion.id))
+            } catch {
+
+            }
+            return
+
             await suggestionService?.notifyAccepted(
                 suggestion,
                 workspaceInfo: .init(

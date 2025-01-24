@@ -43,7 +43,7 @@ public struct SelectedCompletionInfo: Codable, Sendable {
 public struct GetSuggestion: FromXcodeToCoreIPCProtocol {
     public static var messageType: String { "autocomplete/getSuggestion" }
 
-    public struct Request: Codable, Sendable {
+    public struct Request: ProjectProtocol, Codable, Sendable {
         public let project: Project
         public let document: EditorContent
         public let isUntitledFile: Bool
@@ -87,36 +87,22 @@ public struct GetSuggestion: FromXcodeToCoreIPCProtocol {
     public typealias ResponseType = [CodeSuggestion]
 }
 
-struct AcceptSuggestion {
-    static var messageType: String { "xcode/autocomplete/acceptSuggestion" }
+public struct AcceptSuggestion: FromXcodeToCoreIPCProtocol {
+    public static var messageType: String { "autocomplete/accept" }
 
-    struct Request: Codable {
-        let project: Project
+    public struct Request: ProjectProtocol, Codable, Sendable {
+        public let project: Project
+        public let completionId: String
 
+        public init(project: Project, completionId: String) {
+            self.project = project
+            self.completionId = completionId
+        }
     }
 
-    struct Response: Codable {
-        let project: Project
+    public struct Response: Codable, Sendable { }
 
-    }
-
-    typealias RequestType = Request
-    typealias ResponseType = Response
+    public typealias RequestType = Request
+    public typealias ResponseType = Response
 }
 
-struct RejectSuggestion {
-    static var messageType: String { "xcode/autocomplete/rejectSuggestion" }
-
-    struct Request: Codable {
-        let project: Project
-
-    }
-
-    struct Response: Codable {
-        let project: Project
-
-    }
-
-    typealias RequestType = Request
-    typealias ResponseType = Response
-}
