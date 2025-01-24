@@ -1,8 +1,8 @@
 import Foundation
 import SuggestionBasic
 
-public struct EditorContent: Codable {
-    public struct Selection: Codable {
+public struct EditorContent: Codable, Sendable {
+    public struct Selection: Codable, Sendable {
         public var start: CursorPosition
         public var end: CursorPosition
 

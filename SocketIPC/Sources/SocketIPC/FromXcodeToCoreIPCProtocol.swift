@@ -7,6 +7,7 @@
 
 import Foundation
 import SuggestionBasic
+@preconcurrency import XPCShared
 
 public struct RangeInFileWithContents: Codable, Sendable {
     public let filepath: String
@@ -44,6 +45,7 @@ public struct GetSuggestion: FromXcodeToCoreIPCProtocol {
 
     public struct Request: Codable, Sendable {
         public let project: Project
+        public let document: EditorContent
         public let isUntitledFile: Bool
         public let completionId: String
         public let filepath: String
@@ -56,6 +58,7 @@ public struct GetSuggestion: FromXcodeToCoreIPCProtocol {
 
         public init(
             project: Project,
+            document: EditorContent,
             isUntitledFile: Bool,
             completionId: String,
             filepath: String,
@@ -67,6 +70,7 @@ public struct GetSuggestion: FromXcodeToCoreIPCProtocol {
             injectDetails: String?
         ) {
             self.project = project
+            self.document = document
             self.isUntitledFile = isUntitledFile
             self.completionId = completionId
             self.filepath = filepath

@@ -32,6 +32,7 @@ public extension Workspace {
         forFileAt fileURL: URL,
         editor: EditorContent
     ) async throws -> [CodeSuggestion] {
+        print("[GetAutoCompletion] \(editor.content)")
         refreshUpdateTime()
 
         let filespace = try createFilespaceIfNeeded(fileURL: fileURL)
@@ -63,6 +64,7 @@ public extension Workspace {
         let project = Project(id: "test", documentUrl: projectRootURL.path(percentEncoded: false))
         let request = GetSuggestion.Request(
             project: Project(id: "test", documentUrl: projectRootURL.path(percentEncoded: false)),
+            document: editor,
             isUntitledFile: false,
             completionId: completionId,
             filepath: fileURL.absoluteString,
@@ -74,8 +76,10 @@ public extension Workspace {
             injectDetails: nil
         )
         let response = try await SocketIPCClient.shared.request(GetSuggestion.self, project: project, message: request)
-         
-//        print("[Suggestion] \(response)")
+
+        try Task.checkCancellation()
+
+        // print("[Suggestion] \(response)")
         filespace.setSuggestions([response])
         return [response]
 
