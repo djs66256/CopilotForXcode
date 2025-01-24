@@ -67,7 +67,6 @@ public extension Workspace {
         let pos = editor.cursorPosition
         let project = self.project
         let request = GetSuggestion.Request(
-            project: project,
             document: editor,
             isUntitledFile: false,
             completionId: completionId,
@@ -176,7 +175,7 @@ public extension Workspace {
             do {
                 _ = try await AcceptSuggestion
                     .request(project: project,
-                             message: .init(project: project, completionId: suggestion.id))
+                             message: .init(completionId: suggestion.id))
             } catch {
 
             }

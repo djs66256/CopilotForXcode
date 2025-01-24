@@ -14,23 +14,17 @@ public struct Project: Codable, Sendable {
     }
 }
 
-public protocol ProjectProtocol {
-    var project: Project { get }
-}
-
 public protocol IPCProtocol {
     associatedtype RequestType: Codable
     associatedtype ResponseType: Codable
     static var messageType: String { get }
 }
 
-public protocol FromCoreToXcodeIPCProtocol: IPCProtocol
-where ResponseType: ProjectProtocol {
+public protocol FromCoreToXcodeIPCProtocol: IPCProtocol {
 
 }
 
-public protocol FromXcodeToCoreIPCProtocol: IPCProtocol
-where RequestType: ProjectProtocol {
+public protocol FromXcodeToCoreIPCProtocol: IPCProtocol {
 
 }
 

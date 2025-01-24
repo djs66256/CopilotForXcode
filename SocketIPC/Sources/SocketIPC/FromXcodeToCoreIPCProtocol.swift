@@ -43,8 +43,7 @@ public struct SelectedCompletionInfo: Codable, Sendable {
 public struct GetSuggestion: FromXcodeToCoreIPCProtocol {
     public static var messageType: String { "autocomplete/getSuggestion" }
 
-    public struct Request: ProjectProtocol, Codable, Sendable {
-        public let project: Project
+    public struct Request: Codable, Sendable {
         public let document: EditorContent
         public let isUntitledFile: Bool
         public let completionId: String
@@ -57,7 +56,6 @@ public struct GetSuggestion: FromXcodeToCoreIPCProtocol {
         public let injectDetails: String?
 
         public init(
-            project: Project,
             document: EditorContent,
             isUntitledFile: Bool,
             completionId: String,
@@ -69,7 +67,6 @@ public struct GetSuggestion: FromXcodeToCoreIPCProtocol {
             selectedCompletionInfo: SelectedCompletionInfo?,
             injectDetails: String?
         ) {
-            self.project = project
             self.document = document
             self.isUntitledFile = isUntitledFile
             self.completionId = completionId
@@ -90,12 +87,10 @@ public struct GetSuggestion: FromXcodeToCoreIPCProtocol {
 public struct AcceptSuggestion: FromXcodeToCoreIPCProtocol {
     public static var messageType: String { "autocomplete/accept" }
 
-    public struct Request: ProjectProtocol, Codable, Sendable {
-        public let project: Project
+    public struct Request: Codable, Sendable {
         public let completionId: String
 
-        public init(project: Project, completionId: String) {
-            self.project = project
+        public init(completionId: String) {
             self.completionId = completionId
         }
     }
