@@ -68,10 +68,6 @@ class SourceEditorExtension: NSObject, XCSourceEditorExtension {
             _ = try await service.getXPCServiceVersion()
         }
         #endif
-
-        DispatchQueue.main.async {
-            SocketIPCClient.shared.start()
-        }
     }
 }
 

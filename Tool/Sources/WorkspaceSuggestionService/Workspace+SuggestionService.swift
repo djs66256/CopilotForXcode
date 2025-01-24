@@ -80,8 +80,8 @@ public extension Workspace {
         try Task.checkCancellation()
 
         // print("[Suggestion] \(response)")
-        filespace.setSuggestions([response])
-        return [response]
+        filespace.setSuggestions(response)
+        return response
 
 
         // ====================================

@@ -84,7 +84,7 @@ public struct GetSuggestion: FromXcodeToCoreIPCProtocol {
     }
 
     public typealias RequestType = Request
-    public typealias ResponseType = CodeSuggestion
+    public typealias ResponseType = [CodeSuggestion]
 }
 
 struct AcceptSuggestion {
