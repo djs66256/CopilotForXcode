@@ -32,7 +32,7 @@ public extension Workspace {
         forFileAt fileURL: URL,
         editor: EditorContent
     ) async throws -> [CodeSuggestion] {
-        print("[GetAutoCompletion] \(editor.content)")
+        // print("[GetAutoCompletion] \(editor.content)")
         refreshUpdateTime()
 
         let filespace = try createFilespaceIfNeeded(fileURL: fileURL)
