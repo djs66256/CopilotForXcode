@@ -12,8 +12,8 @@ class IDEIPCService {
     init(server: SocketIPCClient) {
         self.server = server
         
-        server.on(GetOpenFiles.self) { request in
-            request.
+        GetOpenFiles.onProject { project, request in
+            
         }
     }
     

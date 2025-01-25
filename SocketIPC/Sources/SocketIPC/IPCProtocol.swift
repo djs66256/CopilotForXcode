@@ -28,9 +28,20 @@ public protocol FromXcodeToCoreIPCProtocol: IPCProtocol {
 
 }
 
-extension IPCProtocol {
+extension FromXcodeToCoreIPCProtocol {
     public static func request(project: Project? = nil,
                                message: RequestType) async throws -> ResponseType {
         try await SocketIPCClient.shared.request(Self.self, project: project, message: message)
+    }
+}
+
+extension FromCoreToXcodeIPCProtocol {
+    public static func onProject(
+        _ callback: @escaping @Sendable (_ project: Project, _ request: RequestType) async throws -> ResponseType) {
+        SocketIPCClient.shared.on(Self.self, callback)
+    }
+
+    public static func on(_ callback: @escaping @Sendable (_ request: RequestType) async throws -> ResponseType) {
+        SocketIPCClient.shared.on(Self.self, callback)
     }
 }
