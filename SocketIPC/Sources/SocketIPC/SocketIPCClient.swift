@@ -160,9 +160,9 @@ public class SocketIPCClient: @unchecked Sendable {
     }
 
     public struct Request<IPC: IPCProtocol>: @unchecked Sendable {
-        let project: Project?
-        let message: IPC.RequestType
-        let response: (IPC.ResponseType) throws -> Void
+        public let project: Project?
+        public let message: IPC.RequestType
+        public let response: (IPC.ResponseType) throws -> Void
     }
 
     func on(_ messageType: String, _ callback: @escaping NormalCallback) {
@@ -213,6 +213,20 @@ public class SocketIPCClient: @unchecked Sendable {
 
             }
         }
+    }
+    
+    public func on<IPC: IPCProtocol>(
+        _ protocolType: IPC.Type,
+        _ callback: (_ project: Project, _ request: IPC.RequestType) async throws -> IPC.ResponseType) {
+            on(protocolType) { event in
+                Task {
+                    if let project = event.project {
+                        try await callback(project, event.message)
+                    } else {
+                        
+                    }
+                }
+            }
     }
 
 //    public func on<IPC: IPCProtocol>(_ protocolType: IPC.Type) -> AsyncStream<Request<IPC>> {

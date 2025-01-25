@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		6513F6112D3C86BF004A0768 /* IPCMessenger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6513F6102D3C86A8004A0768 /* IPCMessenger.swift */; };
 		651BC1D22D23D5FB00EDE20D /* SocketIPC in Frameworks */ = {isa = PBXBuildFile; productRef = 651BC1D12D23D5FB00EDE20D /* SocketIPC */; };
+		6585E4632D43E93A00960CD6 /* IDEIPCService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6585E4622D43E92A00960CD6 /* IDEIPCService.swift */; };
 		C8009BFF2941C551007AA7E8 /* ToggleRealtimeSuggestionsCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8009BFE2941C551007AA7E8 /* ToggleRealtimeSuggestionsCommand.swift */; };
 		C8009C032941C576007AA7E8 /* RealtimeSuggestionCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8009C022941C576007AA7E8 /* RealtimeSuggestionCommand.swift */; };
 		C800DBB1294C624D00B04CAC /* PrefetchSuggestionsCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = C800DBB0294C624D00B04CAC /* PrefetchSuggestionsCommand.swift */; };
@@ -181,6 +182,7 @@
 /* Begin PBXFileReference section */
 		6513F6102D3C86A8004A0768 /* IPCMessenger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IPCMessenger.swift; sourceTree = "<group>"; };
 		655C204F2D1E45870014857E /* SocketIPC */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = SocketIPC; sourceTree = "<group>"; };
+		6585E4622D43E92A00960CD6 /* IDEIPCService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IDEIPCService.swift; sourceTree = "<group>"; };
 		C8009BFE2941C551007AA7E8 /* ToggleRealtimeSuggestionsCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleRealtimeSuggestionsCommand.swift; sourceTree = "<group>"; };
 		C8009C022941C576007AA7E8 /* RealtimeSuggestionCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealtimeSuggestionCommand.swift; sourceTree = "<group>"; };
 		C800DBB0294C624D00B04CAC /* PrefetchSuggestionsCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrefetchSuggestionsCommand.swift; sourceTree = "<group>"; };
@@ -304,6 +306,7 @@
 			isa = PBXGroup;
 			children = (
 				6513F6102D3C86A8004A0768 /* IPCMessenger.swift */,
+				6585E4622D43E92A00960CD6 /* IDEIPCService.swift */,
 			);
 			path = Messenger;
 			sourceTree = "<group>";
@@ -734,6 +737,7 @@
 				C89E75C32A46FB32000DD64F /* AppDelegate+Menu.swift in Sources */,
 				C8738B712BE4F8B700609E7F /* XPCController.swift in Sources */,
 				6513F6112D3C86BF004A0768 /* IPCMessenger.swift in Sources */,
+				6585E4632D43E93A00960CD6 /* IDEIPCService.swift in Sources */,
 				C861E6202994F63A0056CB02 /* ServiceDelegate.swift in Sources */,
 				C861E6112994F6070056CB02 /* AppDelegate.swift in Sources */,
 			);
