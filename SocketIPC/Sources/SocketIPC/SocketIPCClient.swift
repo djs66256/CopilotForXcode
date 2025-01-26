@@ -37,7 +37,7 @@ public struct ProjectToken: Codable, Sendable {
     public static let inspectorToken = ProjectToken(type: "inspector")
 }
 
-enum SocketIPCClientError: Error {
+public enum SocketIPCClientError: Error {
     case unknow
     case timeout
     case serverError(code: Int, error: String)
@@ -165,8 +165,9 @@ public class SocketIPCClient: @unchecked Sendable {
         public let response: (Result<IPC.ResponseType, Error>) -> Void
     }
 
-    func on(_ messageType: String, _ callback: @escaping NormalCallback) {
-        socket.on(messageType, callback: callback)
+    private func on(_ messageType: String, _ callback: @escaping NormalCallback) {
+        let event = "xcode:\(messageType)"
+        socket.on(event, callback: callback)
     }
 
     public func on<IPC: IPCProtocol>(_ protocolType: IPC.Type,

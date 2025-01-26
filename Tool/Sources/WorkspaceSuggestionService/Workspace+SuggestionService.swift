@@ -26,8 +26,8 @@ public extension Workspace {
 }
 
 public extension Workspace {
-    private var project: Project {
-        Project(id: "test", documentUrl: projectRootURL.path(percentEncoded: false))
+    var project: Project {
+        Project(id: self.id, documentUrl: projectRootURL.path(percentEncoded: false))
     }
 
     @WorkspaceActor

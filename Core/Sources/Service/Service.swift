@@ -29,7 +29,7 @@ public final class Service {
     @MainActor
     public static let shared = Service()
 
-    @Dependency(\.workspacePool) var workspacePool
+    @Dependency(\.workspacePool) public var workspacePool
     @MainActor
     public let guiController: GraphicalUserInterfaceController
     public let commandHandler: CommandHandler

@@ -5,7 +5,7 @@
 //  Created by daniel on 2025/1/13.
 //
 
-public struct Project: Codable, Sendable {
+public struct Project: Equatable, Codable, Sendable {
     public let id: String
     public let documentUrl: String
     public init(id: String, documentUrl: String) {

@@ -13,6 +13,8 @@ class IPCMessenger {
     static let shared = IPCMessenger()
 
     func setup() {
+        IDEIPCService(server: SocketIPCClient.shared)
+
         if let workspaces = XcodeInspector.shared.activeXcode?.workspaces {
             for (id, workspace) in workspaces {
                 let element = workspace.element
