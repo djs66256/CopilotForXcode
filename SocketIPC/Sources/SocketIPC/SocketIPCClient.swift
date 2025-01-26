@@ -44,9 +44,10 @@ public enum SocketIPCClientError: Error {
     case clientError(code: Int, error: String)
 }
 
+fileprivate let jsonEncoder = JSONEncoder()
+fileprivate let jsonDecoder = JSONDecoder()
+
 public class SocketIPCClient: @unchecked Sendable {
-    static let jsonEncoder = JSONEncoder()
-    static let jsonDecoder = JSONDecoder()
 
     let projectToken: ProjectToken
     let url: URL
@@ -90,7 +91,7 @@ public class SocketIPCClient: @unchecked Sendable {
             guard let self else { return }
             logger.debug("IPC who are you.")
             do {
-                let data = try Self.jsonEncoder.encode(self.projectToken)
+                let data = try jsonEncoder.encode(self.projectToken)
                 ack.with(data)
             } catch {
 
@@ -110,7 +111,7 @@ public class SocketIPCClient: @unchecked Sendable {
         socket.disconnect()
     }
 
-    private func request(_ messageType: String, data: Data, _ callback: @escaping (Data?, Error?) -> Void) {
+    private func requestSocket(_ messageType: String, data: Data, _ callback: @escaping (Data?, Error?) -> Void) {
         let event = "xcode:\(messageType)"
         socket.emitWithAck(event, data).timingOut(after: 10) { datas in
             if datas.count == 1, let data = datas.first as? Data {
@@ -121,9 +122,9 @@ public class SocketIPCClient: @unchecked Sendable {
         }
     }
 
-    private func request(_ messageType: String, data: Data) async throws -> Data {
+    private func requestData(_ messageType: String, data: Data) async throws -> Data {
         try await withCheckedThrowingContinuation { continuation in
-            request(messageType, data: data) { data, error in
+            requestSocket(messageType, data: data) { data, error in
                 if let data {
                     continuation.resume(returning: data)
                 } else {
@@ -133,56 +134,79 @@ public class SocketIPCClient: @unchecked Sendable {
         }
     }
 
+    enum ResponseCode: Int {
+        case ok = 0
+    }
+
     struct Response<T: Codable>: Codable {
         let code: Int
         let error: String?
         let data: T?
     }
-    
+
+    struct ResponseVoid: Codable {
+        let code: Int
+        let error: String?
+    }
+
     struct ProjectRequest<T: Codable>: Codable {
         let project: Project?
         let message: T
     }
 
-    public func request<IPC: IPCProtocol>(_ protocolType: IPC.Type,
-                                          project: Project? = nil,
-                                          message: IPC.RequestType) async throws -> IPC.ResponseType {
-        let req = ProjectRequest(project: project, message: message)
-        let data = try Self.jsonEncoder.encode(req)
-        let responseData = try await request(protocolType.messageType, data: data)
-        // let str = String(data: responseData, encoding: .utf8)
-        let response = try Self.jsonDecoder.decode(Response<IPC.ResponseType>.self, from: responseData)
-        if response.code == 0, let res = response.data {
+    struct ProjectRequestVoid: Codable {
+        let project: Project?
+    }
+
+    public func request<IPC: IPCProtocol>(
+        _ protocolType: IPC.Type,
+        project: Project? = nil,
+        message: IPC.RequestType) async throws -> IPC.ResponseType
+    where IPC.RequestType: Codable, IPC.ResponseType: Codable {
+        let request = ProjectRequest(project: project, message: message)
+        let requestData = try jsonEncoder.encode(request)
+        let responseData = try await self.requestData(protocolType.messageType, data: requestData)
+        let response = try jsonDecoder.decode(Response<IPC.ResponseType>.self, from: responseData)
+        if response.code == ResponseCode.ok.rawValue, let res = response.data {
             return res
         } else {
             throw SocketIPCClientError.serverError(code: response.code, error: response.error ?? "unknow")
         }
     }
 
-    public struct Request<IPC: IPCProtocol>: @unchecked Sendable {
-        public let project: Project?
-        public let message: IPC.RequestType
-        public let response: (Result<IPC.ResponseType, Error>) -> Void
+    public func request<IPC: IPCProtocol>(
+        _ protocolType: IPC.Type,
+        project: Project? = nil,
+        message: IPC.RequestType) async throws -> IPC.ResponseType
+    where IPC.RequestType == Void, IPC.ResponseType: Codable {
+        let request = ProjectRequestVoid(project: project)
+        let requestData = try jsonEncoder.encode(request)
+        let responseData = try await self.requestData(protocolType.messageType, data: requestData)
+        let response = try jsonDecoder.decode(Response<IPC.ResponseType>.self, from: responseData)
+        if response.code == ResponseCode.ok.rawValue, let res = response.data {
+            return res
+        } else {
+            throw SocketIPCClientError.serverError(code: response.code, error: response.error ?? "unknow")
+        }
     }
 
-    private func on(_ messageType: String, _ callback: @escaping NormalCallback) {
+    private func onSocket(_ messageType: String, _ callback: @escaping NormalCallback) {
         let event = "xcode:\(messageType)"
         socket.on(event, callback: callback)
     }
 
-    public func on<IPC: IPCProtocol>(_ protocolType: IPC.Type,
-                                     _ callback: @escaping (Request<IPC>) throws -> Void) {
-        let messageType = protocolType.messageType
-        on(messageType) { datas, ack in
-            func responseData<T: Codable>(_ response: T) throws {
-                let responseWrapper = Response(code: 0, error: nil, data: response)
-                let data = try Self.jsonEncoder.encode(responseWrapper)
-                ack.with(data)
+    private func onData(
+        _ messageType: String,
+        _ callback: @escaping @Sendable (_ data: Data, _ callback: @escaping @Sendable (Result<Data, Error>) -> Void) -> Void
+    ) {
+        onSocket(messageType) { datas, ack in
+            @Sendable func responseData(_ response: Data) {
+                ack.with(response)
             }
 
             func responseError(code: Int, error: String) {
                 let response = Response<String>(code: -1, error: "", data: nil)
-                let data = try? Self.jsonEncoder.encode(response)
+                let data = try? jsonEncoder.encode(response)
                 ack.with(data ?? "")
             }
 
@@ -202,63 +226,120 @@ public class SocketIPCClient: @unchecked Sendable {
                     responseError(code: -1, error: error.localizedDescription)
                 }
             }
-            do {
-                if let data = datas.first as? Data {
-                    let message = try Self.jsonDecoder.decode(ProjectRequest<IPC.RequestType>.self, from: data)
-                    let request = Request<IPC>(project: message.project, message: message.message) { result in
-                        switch result {
-                        case .success(let data):
-                            do {
-                                try responseData(data)
-                            } catch {
-                                responseError(SocketIPCClientError.clientError(code: -1, error: "data encoding error"))
-                            }
-                        case .failure(let error):
-                            responseError(error)
-                        }
+
+            if let data = datas.first as? Data {
+                callback(data) { result in
+                    switch result {
+                    case .success(let success):
+                        responseData(success)
+                    case .failure(let failure):
+                        responseError(failure)
                     }
-                    try callback(request)
                 }
-            } catch {
-                responseError(error)
+            }
+        }
+    }
+
+//    public struct IPCTask<IPC: IPCProtocol>: @unchecked Sendable {
+//        public let project: Project?
+//        public let request: IPC.RequestType
+//        public let response: (Result<IPC.ResponseType, Error>) -> Void
+//
+//        init(
+//            project: Project?,
+//            request: IPC.RequestType,
+//            response: @escaping (Result<Data, Error>) -> Void
+//        ) where IPC.ResponseType: Codable {
+//            self.project = project
+//            self.request = request
+//            self.response = { result in
+//                switch result {
+//                case .success(let data):
+//                    let responseWrapper = Response(code: 0, error: nil, data: data)
+//                    do {
+//                        let data = try jsonEncoder.encode(responseWrapper)
+//                        response(.success(data))
+//                    } catch {
+//                        response(.failure(error))
+//                    }
+//                case .failure(let error):
+//                    response(.failure(error))
+//                }
+//            }
+//        }
+//    }
+//
+//    public func on<IPC: IPCProtocol>(
+//        _ protocolType: IPC.Type,
+//        _ callback: @escaping (IPCTask<IPC>) throws -> Void)
+//    where IPC.RequestType: Codable, IPC.ResponseType: Codable {
+//        onData(protocolType.messageType) { data, cb in
+//            do {
+//                let request = try jsonDecoder.decode(ProjectRequest<IPC.RequestType>.self, from: data)
+//                let task = IPCTask<IPC>(project: request.project, request: request.message, response: cb)
+//                try callback(task)
+//            } catch {
+//                cb(.failure(error))
+//            }
+//        }
+//    }
+//
+//    public func on<IPC: IPCProtocol>(_ protocolType: IPC.Type,
+//                                     _ callback: @escaping (IPCTask<IPC>) throws -> Void)
+//    where IPC.RequestType == Void, IPC.ResponseType: Codable {
+//        onData(protocolType.messageType) { data, cb in
+//            do {
+//                let request = try jsonDecoder.decode(ProjectRequestVoid.self, from: data)
+//                let task = IPCTask<IPC>(project: request.project, request: (), response: cb)
+//                try callback(task)
+//            } catch {
+//                cb(.failure(error))
+//            }
+//        }
+//    }
+
+    public struct IPCRequest<RequestType>: @unchecked Sendable {
+        public let project: Project?
+        public let request: RequestType
+    }
+
+    public func on<IPC: IPCProtocol>(
+        _ protocolType: IPC.Type,
+        _ callback: @escaping @Sendable (_ task: IPCRequest<IPC.RequestType>) async throws -> IPC.ResponseType)
+    where IPC.RequestType: Codable, IPC.ResponseType: Codable {
+        onData(protocolType.messageType) { data, cb in
+            Task {
+                do {
+                    let request = try jsonDecoder.decode(ProjectRequest<IPC.RequestType>.self, from: data)
+                    let task = IPCRequest(project: request.project, request: request.message)
+//                    let response = try await callback(task)
+//                    let responseData = try jsonEncoder.encode(response)
+//                    cb(.success(responseData))
+                } catch {
+//                    cb(.failure(error))
+                }
             }
         }
     }
 
     public func on<IPC: IPCProtocol>(
         _ protocolType: IPC.Type,
-        _ callback: @escaping @Sendable (_ project: Project, _ request: IPC.RequestType) async throws -> IPC.ResponseType) {
-            on(protocolType) { request in
-                Task {
-                    do {
-                        if let project = request.project {
-                            let response = try await callback(project, request.message)
-                            request.response(.success(response))
-                        } else {
-                            request.response(
-                                .failure(SocketIPCClientError.serverError(code: -2, error: "Request requires project")))
-                        }
-                    } catch {
-                        request.response(.failure(error))
-                    }
+        _ callback: @escaping @Sendable (_ task: IPCRequest<Void>) async throws -> IPC.ResponseType)
+    where IPC.RequestType == Void, IPC.ResponseType: Codable {
+        onData(protocolType.messageType) { data, cb in
+            Task {
+                do {
+                    let request = try jsonDecoder.decode(ProjectRequestVoid.self, from: data)
+                    let task = IPCRequest(project: request.project, request: ())
+                    let response = try await callback(task)
+                    let responseData = try jsonEncoder.encode(response)
+                    cb(.success(responseData))
+                } catch {
+                    cb(.failure(error))
                 }
             }
         }
-
-    public func on<IPC: IPCProtocol>(
-        _ protocolType: IPC.Type,
-        _ callback: @escaping @Sendable (_ request: IPC.RequestType) async throws -> IPC.ResponseType) {
-            on(protocolType) { request in
-                Task {
-                    do {
-                        let response = try await callback(request.message)
-                        request.response(.success(response))
-                    } catch {
-                        request.response(.failure(error))
-                    }
-                }
-            }
-        }
+    }
 
 //    public func on<IPC: IPCProtocol>(_ protocolType: IPC.Type) -> AsyncStream<Request<IPC>> {
 //        let messageType = protocolType.messageType

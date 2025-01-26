@@ -15,8 +15,8 @@ public struct Project: Equatable, Codable, Sendable {
 }
 
 public protocol IPCProtocol {
-    associatedtype RequestType: Codable
-    associatedtype ResponseType: Codable
+    associatedtype RequestType
+    associatedtype ResponseType
     static var messageType: String { get }
 }
 
@@ -30,18 +30,25 @@ public protocol FromXcodeToCoreIPCProtocol: IPCProtocol {
 
 extension FromXcodeToCoreIPCProtocol {
     public static func request(project: Project? = nil,
-                               message: RequestType) async throws -> ResponseType {
+                               message: RequestType) async throws -> ResponseType
+    where RequestType: Codable, ResponseType: Codable {
+        try await SocketIPCClient.shared.request(Self.self, project: project, message: message)
+    }
+
+    public static func request(project: Project? = nil,
+                               message: RequestType) async throws -> ResponseType
+    where RequestType == Void, ResponseType: Codable {
         try await SocketIPCClient.shared.request(Self.self, project: project, message: message)
     }
 }
 
 extension FromCoreToXcodeIPCProtocol {
-    public static func onProject(
-        _ callback: @escaping @Sendable (_ project: Project, _ request: RequestType) async throws -> ResponseType) {
-        SocketIPCClient.shared.on(Self.self, callback)
-    }
 
-    public static func on(_ callback: @escaping @Sendable (_ request: RequestType) async throws -> ResponseType) {
+    public static func on(
+        _ callback: @escaping @Sendable (
+            _ request: SocketIPCClient.IPCRequest<RequestType>
+        ) async throws -> ResponseType
+    ) where Self.RequestType: Codable, Self.ResponseType: Codable {
         SocketIPCClient.shared.on(Self.self, callback)
     }
 }
