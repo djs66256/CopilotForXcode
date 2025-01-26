@@ -203,7 +203,7 @@ public class SocketIPCClient: @unchecked Sendable {
                 }
             }
             do {
-                if datas.count == 1, let data = datas.first as? Data {
+                if let data = datas.first as? Data {
                     let message = try Self.jsonDecoder.decode(ProjectRequest<IPC.RequestType>.self, from: data)
                     let request = Request<IPC>(project: message.project, message: message.message) { result in
                         switch result {
