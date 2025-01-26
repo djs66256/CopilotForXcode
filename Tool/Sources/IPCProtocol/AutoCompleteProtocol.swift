@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SocketIPC
 import SuggestionBasic
 @preconcurrency import XPCShared
 

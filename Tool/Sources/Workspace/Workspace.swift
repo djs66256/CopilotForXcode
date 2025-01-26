@@ -74,7 +74,6 @@ public final class Workspace {
         }
     }
 
-    public let id = UUID().uuidString
     private var additionalProperties = WorkspacePropertyValues()
     public internal(set) var plugins = [ObjectIdentifier: WorkspacePlugin]()
     public let workspaceURL: URL

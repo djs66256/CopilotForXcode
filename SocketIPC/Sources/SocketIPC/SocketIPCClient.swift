@@ -7,7 +7,7 @@
 
 import os
 import Foundation
-import SocketIO
+@preconcurrency import SocketIO
 import Network
 
 struct Message<T: Codable>: Codable {
@@ -46,6 +46,7 @@ public enum SocketIPCClientError: Error {
 
 fileprivate let jsonEncoder = JSONEncoder()
 fileprivate let jsonDecoder = JSONDecoder()
+fileprivate let socketQueue = DispatchQueue(label: "com.daniel.socketipc")
 
 public class SocketIPCClient: @unchecked Sendable {
 
@@ -58,7 +59,13 @@ public class SocketIPCClient: @unchecked Sendable {
         self.projectToken = projectToken
         self.url = url
 
-        manager = SocketManager(socketURL: url, config: [.log(true), .forceWebsockets(true)])
+        manager = SocketManager(
+            socketURL: url,
+            config: [
+                .log(true),
+                .forceWebsockets(true),
+                .handleQueue(socketQueue)
+            ])
         manager.reconnects = true
         manager.reconnectWait = 1
         manager.reconnectWaitMax = 5
@@ -111,13 +118,19 @@ public class SocketIPCClient: @unchecked Sendable {
         socket.disconnect()
     }
 
-    private func requestSocket(_ messageType: String, data: Data, _ callback: @escaping (Data?, Error?) -> Void) {
-        let event = "xcode:\(messageType)"
-        socket.emitWithAck(event, data).timingOut(after: 10) { datas in
-            if datas.count == 1, let data = datas.first as? Data {
-                callback(data, nil)
-            } else {
-                callback(nil, SocketIPCClientError.timeout)
+    private func requestSocket(
+        _ messageType: String,
+        data: Data,
+        _ callback: @escaping @Sendable (Data?, Error?) -> Void
+    ) {
+        socketQueue.async {
+            let event = "xcode:\(messageType)"
+            self.socket.emitWithAck(event, data).timingOut(after: 10) { datas in
+                if datas.count == 1, let data = datas.first as? Data {
+                    callback(data, nil)
+                } else {
+                    callback(nil, SocketIPCClientError.timeout)
+                }
             }
         }
     }
@@ -200,17 +213,21 @@ public class SocketIPCClient: @unchecked Sendable {
         _ callback: @escaping @Sendable (_ data: Data, _ callback: @escaping @Sendable (Result<Data, Error>) -> Void) -> Void
     ) {
         onSocket(messageType) { datas, ack in
-            @Sendable func responseData(_ response: Data) {
-                ack.with(response)
+             @Sendable func responseData(_ response: Data) {
+                socketQueue.async {
+                    ack.with(response)
+                }
             }
 
-            func responseError(code: Int, error: String) {
+            @Sendable func responseError(code: Int, error: String) {
                 let response = Response<String>(code: -1, error: "", data: nil)
                 let data = try? jsonEncoder.encode(response)
-                ack.with(data ?? "")
+                socketQueue.async {
+                    ack.with(data ?? "")
+                }
             }
 
-            func responseError(_ error: Error) {
+            @Sendable func responseError(_ error: Error) {
                 if let error = error as? SocketIPCClientError {
                     switch error {
                     case .unknow:
@@ -312,11 +329,11 @@ public class SocketIPCClient: @unchecked Sendable {
                 do {
                     let request = try jsonDecoder.decode(ProjectRequest<IPC.RequestType>.self, from: data)
                     let task = IPCRequest(project: request.project, request: request.message)
-//                    let response = try await callback(task)
-//                    let responseData = try jsonEncoder.encode(response)
-//                    cb(.success(responseData))
+                    let response = try await callback(task)
+                    let responseData = try jsonEncoder.encode(response)
+                    cb(.success(responseData))
                 } catch {
-//                    cb(.failure(error))
+                    cb(.failure(error))
                 }
             }
         }

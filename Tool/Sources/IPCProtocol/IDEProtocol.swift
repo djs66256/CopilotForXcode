@@ -5,8 +5,10 @@
 //  Created by daniel on 2025/1/13.
 //
 
+import SocketIPC
+
 public struct GetIdeInfo: FromCoreToXcodeIPCProtocol {
-    public typealias RequestType = Int
+    public typealias RequestType = Void
     
     public struct Response: Codable, Sendable {
         public var ideType: String = "xcode"
@@ -32,7 +34,7 @@ public struct GetWorkspaces: FromCoreToXcodeIPCProtocol {
 }
 
 public struct GetOpenFiles: FromCoreToXcodeIPCProtocol {
-    public typealias RequestType = Int
+    public typealias RequestType = Void
     
     public typealias ResponseType = [String]
     

@@ -3,6 +3,7 @@ import SuggestionBasic
 import SuggestionProvider
 import Workspace
 import XPCShared
+import IPCProtocol
 import SocketIPC
 
 public extension Workspace {
@@ -27,7 +28,8 @@ public extension Workspace {
 
 public extension Workspace {
     var project: Project {
-        Project(id: self.id, documentUrl: projectRootURL.path(percentEncoded: false))
+        let url = projectRootURL.path(percentEncoded: false)
+        return Project(id: url, documentUrl: url)
     }
 
     @WorkspaceActor

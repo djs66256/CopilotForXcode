@@ -327,7 +327,7 @@ let package = Package(
                 "XPCShared",
                 "BuiltinExtension",
                 "SuggestionInjector",
-                "SocketIPC"
+                "IPCProtocol"
             ]
         ),
 
@@ -370,6 +370,14 @@ let package = Package(
         ),
 
         // MARK: - Services
+
+        .target(
+            name: "IPCProtocol",
+            dependencies: [
+                "SocketIPC",
+                "SuggestionBasic",
+                "XPCShared"
+            ]),
 
         .target(
             name: "LangChain",
