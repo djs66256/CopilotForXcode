@@ -11,6 +11,7 @@
 		651BC1D22D23D5FB00EDE20D /* SocketIPC in Frameworks */ = {isa = PBXBuildFile; productRef = 651BC1D12D23D5FB00EDE20D /* SocketIPC */; };
 		6545034B2D4638DF003B8418 /* Project+workspace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6545034A2D4638CF003B8418 /* Project+workspace.swift */; };
 		6585E4632D43E93A00960CD6 /* IDEIPCService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6585E4622D43E92A00960CD6 /* IDEIPCService.swift */; };
+		6585E4652D47D1A400960CD6 /* WorkspaceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6585E4642D47D18700960CD6 /* WorkspaceService.swift */; };
 		C8009BFF2941C551007AA7E8 /* ToggleRealtimeSuggestionsCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8009BFE2941C551007AA7E8 /* ToggleRealtimeSuggestionsCommand.swift */; };
 		C8009C032941C576007AA7E8 /* RealtimeSuggestionCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8009C022941C576007AA7E8 /* RealtimeSuggestionCommand.swift */; };
 		C800DBB1294C624D00B04CAC /* PrefetchSuggestionsCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = C800DBB0294C624D00B04CAC /* PrefetchSuggestionsCommand.swift */; };
@@ -185,6 +186,7 @@
 		6545034A2D4638CF003B8418 /* Project+workspace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Project+workspace.swift"; sourceTree = "<group>"; };
 		655C204F2D1E45870014857E /* SocketIPC */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = SocketIPC; sourceTree = "<group>"; };
 		6585E4622D43E92A00960CD6 /* IDEIPCService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IDEIPCService.swift; sourceTree = "<group>"; };
+		6585E4642D47D18700960CD6 /* WorkspaceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceService.swift; sourceTree = "<group>"; };
 		C8009BFE2941C551007AA7E8 /* ToggleRealtimeSuggestionsCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleRealtimeSuggestionsCommand.swift; sourceTree = "<group>"; };
 		C8009C022941C576007AA7E8 /* RealtimeSuggestionCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealtimeSuggestionCommand.swift; sourceTree = "<group>"; };
 		C800DBB0294C624D00B04CAC /* PrefetchSuggestionsCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrefetchSuggestionsCommand.swift; sourceTree = "<group>"; };
@@ -310,6 +312,7 @@
 				654503492D462DBC003B8418 /* CoreHelpers */,
 				6513F6102D3C86A8004A0768 /* IPCMessenger.swift */,
 				6585E4622D43E92A00960CD6 /* IDEIPCService.swift */,
+				6585E4642D47D18700960CD6 /* WorkspaceService.swift */,
 			);
 			path = Messenger;
 			sourceTree = "<group>";
@@ -746,6 +749,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C89E75C32A46FB32000DD64F /* AppDelegate+Menu.swift in Sources */,
+				6585E4652D47D1A400960CD6 /* WorkspaceService.swift in Sources */,
 				C8738B712BE4F8B700609E7F /* XPCController.swift in Sources */,
 				6545034B2D4638DF003B8418 /* Project+workspace.swift in Sources */,
 				6513F6112D3C86BF004A0768 /* IPCMessenger.swift in Sources */,
