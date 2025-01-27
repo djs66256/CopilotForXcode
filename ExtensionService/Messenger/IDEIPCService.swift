@@ -16,9 +16,10 @@ class IDEIPCService {
         GetOpenFiles.on { task in
             if let project = task.project, let workspace = await project.workspace {
                 let urls = workspace.openedFileRecoverableStorage.openedFiles
-                return urls.map {
+                // remove duplicated
+                return Array(Set(urls.map {
                     $0.path(percentEncoded: false)
-                }
+                }))
             }
             throw SocketIPCClientError.serverError(code: -1, error: "")
         } 
