@@ -62,7 +62,7 @@ public class SocketIPCClient: @unchecked Sendable {
         manager = SocketManager(
             socketURL: url,
             config: [
-                .log(true),
+                // .log(true),
                 .forceWebsockets(true),
                 .handleQueue(socketQueue)
             ])
@@ -123,12 +123,15 @@ public class SocketIPCClient: @unchecked Sendable {
         data: Data,
         _ callback: @escaping @Sendable (Data?, Error?) -> Void
     ) {
+        let event = "xcode:\(messageType)"
+        logger.debug("client request [\(event)]: \(String(data: data, encoding: .utf8) ?? "<unknown>")")
         socketQueue.async {
-            let event = "xcode:\(messageType)"
             self.socket.emitWithAck(event, data).timingOut(after: 10) { datas in
                 if datas.count == 1, let data = datas.first as? Data {
+                    logger.debug("client response [\(event)]: \(String(data: data, encoding: .utf8) ?? "<unknown>")")
                     callback(data, nil)
                 } else {
+                    logger.debug("client response [\(event)]: error timeout")
                     callback(nil, SocketIPCClientError.timeout)
                 }
             }
@@ -215,6 +218,7 @@ public class SocketIPCClient: @unchecked Sendable {
         onSocket(messageType) { datas, ack in
              @Sendable func responseData(_ response: Data) {
                 socketQueue.async {
+                    logger.debug("server reply [\(messageType)]: \(String(data: response, encoding: .utf8) ?? "<unknown>")")
                     ack.with(response)
                 }
             }
@@ -223,6 +227,7 @@ public class SocketIPCClient: @unchecked Sendable {
                 let response = Response<String>(code: -1, error: "", data: nil)
                 let data = try? jsonEncoder.encode(response)
                 socketQueue.async {
+                    logger.debug("server reply [\(messageType)]: \(String(data: data ?? Data(), encoding: .utf8) ?? "<unknown>")")
                     ack.with(data ?? "")
                 }
             }
@@ -245,6 +250,7 @@ public class SocketIPCClient: @unchecked Sendable {
             }
 
             if let data = datas.first as? Data {
+                logger.debug("socket server on [\(messageType)]: \(String(data: data, encoding: .utf8) ?? "<unknown>")")
                 callback(data) { result in
                     switch result {
                     case .success(let success):
@@ -253,6 +259,9 @@ public class SocketIPCClient: @unchecked Sendable {
                         responseError(failure)
                     }
                 }
+            } else {
+                logger.debug("socket server on [\(messageType)]: error params")
+                responseError(SocketIPCClientError.unknow)
             }
         }
     }
@@ -369,20 +378,20 @@ public class SocketIPCClient: @unchecked Sendable {
 //                        do {
 //                            if datas.count == 1, let data = datas.first as? Data {
 //                                let message = try Self.jsonDecoder.decode(IPC.RequestType.self, from: data)
-//                                
+//
 //                                if Task.isCancelled { return }
 //                                let request = Request<IPC>(message: message) { to in
 //                                    do {
 //                                        let data = try Self.jsonEncoder.encode(to)
 //                                        ack.with(data)
 //                                    } catch {
-//                                        
+//
 //                                    }
 //                                }
 //                                continuation.yield(request)
 //                            }
 //                        } catch {
-//                            
+//
 //                        }
 //                    }
 //                } onCancel: {
