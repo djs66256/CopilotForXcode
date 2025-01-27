@@ -104,8 +104,21 @@ public struct WriteFile: FromCoreToXcodeIPCProtocol {
     public static var messageType: String { "ide/writeFile" }
 }
 
-/*
-public struct GetProblems: FromCoreToXcodeIPCProtocol {
 
+public struct GetProblems: FromCoreToXcodeIPCProtocol {
+    public typealias RequestType = String?
+
+    public struct Response: Codable, Sendable {
+        public let filepath: String;
+        public let range: Range;
+        public let message: String;
+        public init(filepath: String, range: Range, message: String) {
+            self.filepath = filepath
+            self.range = range
+            self.message = message
+        }
+    }
+    public typealias ResponseType = Response
+    public static var messageType: String { "ide/getProblems" }
 }
-*/
+

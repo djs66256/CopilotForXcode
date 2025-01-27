@@ -53,6 +53,10 @@ class IDEIPCService {
 //            return GetCurrentFile.Response(isUntitled: <#T##Bool#>, path: <#T##String#>, contents: <#T##String#>)
             throw SocketIPCClientError.serverError(code: -1, error: "Can not find current file")
         }
+
+        GetProblems.on { task in
+            throw SocketIPCClientError.serverError(code: -1, error: "Not implemented")
+        }
     }
 
 }
