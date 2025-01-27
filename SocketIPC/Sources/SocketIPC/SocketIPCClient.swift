@@ -128,10 +128,10 @@ public class SocketIPCClient: @unchecked Sendable {
         socketQueue.async {
             self.socket.emitWithAck(event, data).timingOut(after: 10) { datas in
                 if datas.count == 1, let data = datas.first as? Data {
-                    logger.debug("client response [\(event)]: \(String(data: data, encoding: .utf8) ?? "<unknown>")")
+                    logger.debug("client response [\(messageType)]: \(String(data: data, encoding: .utf8) ?? "<unknown>")")
                     callback(data, nil)
                 } else {
-                    logger.debug("client response [\(event)]: error timeout")
+                    logger.debug("client response [\(messageType)]: error timeout")
                     callback(nil, SocketIPCClientError.timeout)
                 }
             }
