@@ -329,7 +329,8 @@ public class SocketIPCClient: @unchecked Sendable {
                 do {
                     let request = try jsonDecoder.decode(ProjectRequest<IPC.RequestType>.self, from: data)
                     let task = IPCRequest(project: request.project, request: request.message)
-                    let response = try await callback(task)
+                    let result = try await callback(task)
+                    let response = Response(code: 0, error: nil, data: result)
                     let responseData = try jsonEncoder.encode(response)
                     cb(.success(responseData))
                 } catch {
@@ -348,7 +349,8 @@ public class SocketIPCClient: @unchecked Sendable {
                 do {
                     let request = try jsonDecoder.decode(ProjectRequestVoid.self, from: data)
                     let task = IPCRequest(project: request.project, request: ())
-                    let response = try await callback(task)
+                    let result = try await callback(task)
+                    let response = Response(code: 0, error: nil, data: result)
                     let responseData = try jsonEncoder.encode(response)
                     cb(.success(responseData))
                 } catch {
