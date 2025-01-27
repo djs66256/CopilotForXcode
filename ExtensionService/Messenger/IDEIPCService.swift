@@ -19,7 +19,7 @@ class IDEIPCService {
                 let urls = workspace.openedFileRecoverableStorage.openedFiles
                 // remove duplicated
                 return Array(Set(urls.map {
-                    $0.path(percentEncoded: false)
+                    $0.absoluteString
                 }))
             }
             throw SocketIPCClientError.serverError(code: -1, error: "")
@@ -29,10 +29,10 @@ class IDEIPCService {
             return await Task { @MainActor in
                 return Service.shared.workspacePool.workspaces.map{ (key, workspace) in
                     GetWorkspaces.Response(
-                        dir: workspace.projectRootURL.path(percentEncoded: false)
+                        dir: workspace.projectRootURL.absoluteString
                     )
                 }
-            }.value 
+            }.value
         }
     }
     
