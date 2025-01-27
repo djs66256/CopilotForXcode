@@ -18,9 +18,9 @@ class IDEIPCService {
             if let project = task.project, let workspace = await project.workspace {
                 let urls = workspace.openedFileRecoverableStorage.openedFiles
                 // remove duplicated
-                return Array(Set(urls.map {
+                return urls.map {
                     $0.absoluteString
-                }))
+                }
             }
             throw SocketIPCClientError.serverError(code: -1, error: "")
         }
