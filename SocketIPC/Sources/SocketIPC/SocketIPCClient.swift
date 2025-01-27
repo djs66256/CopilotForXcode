@@ -266,64 +266,6 @@ public class SocketIPCClient: @unchecked Sendable {
         }
     }
 
-//    public struct IPCTask<IPC: IPCProtocol>: @unchecked Sendable {
-//        public let project: Project?
-//        public let request: IPC.RequestType
-//        public let response: (Result<IPC.ResponseType, Error>) -> Void
-//
-//        init(
-//            project: Project?,
-//            request: IPC.RequestType,
-//            response: @escaping (Result<Data, Error>) -> Void
-//        ) where IPC.ResponseType: Codable {
-//            self.project = project
-//            self.request = request
-//            self.response = { result in
-//                switch result {
-//                case .success(let data):
-//                    let responseWrapper = Response(code: 0, error: nil, data: data)
-//                    do {
-//                        let data = try jsonEncoder.encode(responseWrapper)
-//                        response(.success(data))
-//                    } catch {
-//                        response(.failure(error))
-//                    }
-//                case .failure(let error):
-//                    response(.failure(error))
-//                }
-//            }
-//        }
-//    }
-//
-//    public func on<IPC: IPCProtocol>(
-//        _ protocolType: IPC.Type,
-//        _ callback: @escaping (IPCTask<IPC>) throws -> Void)
-//    where IPC.RequestType: Codable, IPC.ResponseType: Codable {
-//        onData(protocolType.messageType) { data, cb in
-//            do {
-//                let request = try jsonDecoder.decode(ProjectRequest<IPC.RequestType>.self, from: data)
-//                let task = IPCTask<IPC>(project: request.project, request: request.message, response: cb)
-//                try callback(task)
-//            } catch {
-//                cb(.failure(error))
-//            }
-//        }
-//    }
-//
-//    public func on<IPC: IPCProtocol>(_ protocolType: IPC.Type,
-//                                     _ callback: @escaping (IPCTask<IPC>) throws -> Void)
-//    where IPC.RequestType == Void, IPC.ResponseType: Codable {
-//        onData(protocolType.messageType) { data, cb in
-//            do {
-//                let request = try jsonDecoder.decode(ProjectRequestVoid.self, from: data)
-//                let task = IPCTask<IPC>(project: request.project, request: (), response: cb)
-//                try callback(task)
-//            } catch {
-//                cb(.failure(error))
-//            }
-//        }
-//    }
-
     public struct IPCRequest<RequestType>: @unchecked Sendable {
         public let project: Project?
         public let request: RequestType
@@ -368,38 +310,6 @@ public class SocketIPCClient: @unchecked Sendable {
             }
         }
     }
-
-//    public func on<IPC: IPCProtocol>(_ protocolType: IPC.Type) -> AsyncStream<Request<IPC>> {
-//        let messageType = protocolType.messageType
-//        return AsyncStream { continuation in
-//            Task {
-//                await withTaskCancellationHandler {
-//                    self.on(messageType) { datas, ack in
-//                        do {
-//                            if datas.count == 1, let data = datas.first as? Data {
-//                                let message = try Self.jsonDecoder.decode(IPC.RequestType.self, from: data)
-//
-//                                if Task.isCancelled { return }
-//                                let request = Request<IPC>(message: message) { to in
-//                                    do {
-//                                        let data = try Self.jsonEncoder.encode(to)
-//                                        ack.with(data)
-//                                    } catch {
-//
-//                                    }
-//                                }
-//                                continuation.yield(request)
-//                            }
-//                        } catch {
-//
-//                        }
-//                    }
-//                } onCancel: {
-//                    self.off(protocolType)
-//                }
-//            }
-//        }
-//    }
 
     @preconcurrency
     public func off<IPC: IPCProtocol>(_ protocolType: IPC.Type) {
