@@ -29,7 +29,7 @@ class IDEIPCService {
             return await Task { @MainActor in
                 return Service.shared.workspacePool.workspaces.map{ (key, workspace) in
                     GetWorkspaces.Response(
-                        dir: workspace.projectRootURL.absoluteString
+                        dir: workspace.projectRootURL.path(percentEncoded: false)
                     )
                 }
             }.value
