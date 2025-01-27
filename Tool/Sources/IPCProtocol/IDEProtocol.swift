@@ -23,12 +23,16 @@ public struct GetIdeInfo: FromCoreToXcodeIPCProtocol {
 }
 
 public struct GetWorkspaces: FromCoreToXcodeIPCProtocol {
-    public typealias RequestType = Int
-    
+    public typealias RequestType = Void
+
     public struct Response: Codable, Sendable {
-        
+        public let dir: String
+
+        public init(dir: String) {
+            self.dir = dir
+        }
     }
-    public typealias ResponseType = Response
+    public typealias ResponseType = [Response]
     
     public static var messageType: String { "ide/getWorkspaces" }
 }

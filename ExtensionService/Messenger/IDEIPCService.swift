@@ -7,6 +7,7 @@
 
 import SocketIPC
 import IPCProtocol
+import Service
 
 class IDEIPCService {
     let server: SocketIPCClient
@@ -22,7 +23,17 @@ class IDEIPCService {
                 }))
             }
             throw SocketIPCClientError.serverError(code: -1, error: "")
-        } 
+        }
+
+        GetWorkspaces.on { task in
+            return await Task { @MainActor in
+                return Service.shared.workspacePool.workspaces.map{ (key, workspace) in
+                    GetWorkspaces.Response(
+                        dir: workspace.projectRootURL.path(percentEncoded: false)
+                    )
+                }
+            }.value 
+        }
     }
     
 }
