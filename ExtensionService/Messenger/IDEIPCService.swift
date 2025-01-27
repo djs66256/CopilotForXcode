@@ -12,7 +12,7 @@ import Service
 class IDEIPCService {
     let server: SocketIPCClient
     init(server: SocketIPCClient) {
-        self.server = server 
+        self.server = server
 
         GetOpenFiles.on { task in
             if let project = task.project, let workspace = await project.workspace {
@@ -34,6 +34,25 @@ class IDEIPCService {
                 }
             }.value
         }
+
+        ReadFile.on { task in
+            if let project = task.project, let workspace = await project.workspace {
+                // TODO:
+            }
+            throw SocketIPCClientError.serverError(code: -1, error: "Not current file")
+        }
+
+        WriteFile.on { task in
+            if let project = task.project, let workspace = await project.workspace {
+                // TODO:
+            }
+            throw SocketIPCClientError.serverError(code: -1, error: "Not current file")
+        }
+
+        GetCurrentFile.on { task in
+//            return GetCurrentFile.Response(isUntitled: <#T##Bool#>, path: <#T##String#>, contents: <#T##String#>)
+            throw SocketIPCClientError.serverError(code: -1, error: "Can not find current file")
+        }
     }
-    
+
 }

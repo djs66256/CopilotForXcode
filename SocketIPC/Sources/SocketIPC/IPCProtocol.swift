@@ -46,7 +46,7 @@ extension FromCoreToXcodeIPCProtocol {
 
     public static func on(
         _ callback: @escaping @Sendable (
-            _ request: SocketIPCClient.IPCRequest<RequestType>
+            _ task: SocketIPCClient.IPCRequest<RequestType>
         ) async throws -> ResponseType
     ) where Self.RequestType: Codable, Self.ResponseType: Codable {
         SocketIPCClient.shared.on(Self.self, callback)
@@ -54,7 +54,7 @@ extension FromCoreToXcodeIPCProtocol {
 
     public static func on(
         _ callback: @escaping @Sendable (
-            _ request: SocketIPCClient.IPCRequest<RequestType>
+            _ task: SocketIPCClient.IPCRequest<RequestType>
         ) async throws -> ResponseType
     ) where Self.RequestType == Void, Self.ResponseType: Codable {
         SocketIPCClient.shared.on(Self.self, callback)
