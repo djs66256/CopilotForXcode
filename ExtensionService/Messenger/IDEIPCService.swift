@@ -8,6 +8,7 @@
 import SocketIPC
 import IPCProtocol
 import Service
+import XcodeInspector
 
 class IDEIPCService {
     let server: SocketIPCClient
@@ -36,8 +37,12 @@ class IDEIPCService {
         }
 
         ReadFile.on { task in
-            if let project = task.project, let workspace = await project.workspace {
-                // TODO:
+            if let project = task.project, let xcode = project.xcode {
+                if let url = xcode.documentURL?.absoluteString {
+                    if url == project.documentUrl {
+                        // TODO:
+                    }
+                }
             }
             throw SocketIPCClientError.serverError(code: -1, error: "Not current file")
         }
