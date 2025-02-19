@@ -28,4 +28,24 @@ extension Project {
         }
         return nil
     }
+
+    func createSourceEditor() -> SourceEditor? {
+        guard let xcode = self.xcode else { return nil }
+        let focusedElement = xcode.appElement.focusedElement
+        if let editorElement = focusedElement, editorElement.isSourceEditor {
+            return .init(
+                runningApplication: xcode.runningApplication,
+                element: editorElement
+            )
+        } else if let element = focusedElement,
+                  let editorElement = element.firstParent(where: \.isSourceEditor)
+        {
+            return .init(
+                runningApplication: xcode.runningApplication,
+                element: editorElement
+            )
+        } else {
+            return nil
+        }
+    }
 }

@@ -40,7 +40,12 @@ class IDEIPCService {
             if let project = task.project, let xcode = project.xcode {
                 if let url = xcode.documentURL?.absoluteString {
                     if url == project.documentUrl {
-                        // TODO:
+                        let sourceEditor = project.createSourceEditor()
+                        if let content = sourceEditor?.getContent().content {
+                            return ReadFile.Response(
+                                content: content
+                            )
+                        }
                     }
                 }
             }
