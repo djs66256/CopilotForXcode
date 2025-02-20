@@ -8,7 +8,7 @@
 	<string>/Applications/Copilot for Xcode.app/Contents/Applications/CopilotForXcodeExtensionService.app/Contents/MacOS/CopilotForXcodeExtensionService</string>
 	<key>MachServices</key>
 	<dict>
-		<key>com.daniel.CopilotForXcode.ExtensionService</key>
+		<key>com.daniel.Xopilot.ExtensionService</key>
 		<true/>
 	</dict>
 </dict>

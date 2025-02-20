@@ -1,13 +1,13 @@
 #include "Version.xcconfig"
 SLASH = /
 
-HOST_APP_NAME = Copilot for Xcode Dev
-BUNDLE_IDENTIFIER_BASE = dev.com.daniel.CopilotForXcode
+HOST_APP_NAME = Xopilot Dev
+BUNDLE_IDENTIFIER_BASE = dev.com.daniel.Xopilot
 SPARKLE_FEED_URL = http:$(SLASH)$(SLASH)127.0.0.1:9433/appcast.xml
 SPARKLE_PUBLIC_KEY = WDzm5GHnc6c8kjeJEgX5GuGiPpW6Lc/ovGjLnrrZvPY=
-APPLICATION_SUPPORT_FOLDER = dev.com.daniel.CopilotForXcode
-EXTENSION_BUNDLE_NAME = Copilot Dev
-EXTENSION_BUNDLE_DISPLAY_NAME = Copilot Dev
+APPLICATION_SUPPORT_FOLDER = dev.com.daniel.Xopilot
+EXTENSION_BUNDLE_NAME = Xopilot Dev
+EXTENSION_BUNDLE_DISPLAY_NAME = Xopilot Dev
 EXTENSION_SERVICE_NAME = CopilotForXcodeExtensionService
 
 // see also target Configs

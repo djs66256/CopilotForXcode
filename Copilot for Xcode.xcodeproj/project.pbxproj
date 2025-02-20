@@ -202,7 +202,7 @@
 		C81458982939EFDC00135263 /* EditorExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = EditorExtension.entitlements; sourceTree = "<group>"; };
 		C81458AD293A009600135263 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		C81458AE293A009800135263 /* Config.debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.debug.xcconfig; sourceTree = "<group>"; };
-		C8189B162938972F00C9DCDA /* Copilot for Xcode Dev.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Copilot for Xcode Dev.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C8189B162938972F00C9DCDA /* Xopilot Dev.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Xopilot Dev.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C8189B192938972F00C9DCDA /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		C8189B1D2938973000C9DCDA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C8189B202938973000C9DCDA /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -390,7 +390,7 @@
 		C8189B172938972F00C9DCDA /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C8189B162938972F00C9DCDA /* Copilot for Xcode Dev.app */,
+				C8189B162938972F00C9DCDA /* Xopilot Dev.app */,
 				C814588C2939EFDC00135263 /* Copilot.appex */,
 				C8216B70298036EC00AD38C7 /* Helper */,
 				C861E60E2994F6070056CB02 /* CopilotForXcodeExtensionService.app */,
@@ -525,7 +525,7 @@
 				C86612F72A06AF74009197D9 /* HostApp */,
 			);
 			productName = "Copilot for Xcode";
-			productReference = C8189B162938972F00C9DCDA /* Copilot for Xcode Dev.app */;
+			productReference = C8189B162938972F00C9DCDA /* Xopilot Dev.app */;
 			productType = "com.apple.product-type.application";
 		};
 		C8216B6F298036EC00AD38C7 /* Helper */ = {

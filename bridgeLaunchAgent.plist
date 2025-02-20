@@ -8,7 +8,7 @@
 	<string>/Applications/Copilot for Xcode.app/Contents/Applications/CommunicationBridge</string>
 	<key>MachServices</key>
 	<dict>
-		<key>com.daniel.CopilotForXcode.CommunicationBridge</key>
+		<key>com.daniel.Xopilot.CommunicationBridge</key>
 		<true/>
 	</dict>
 </dict>
