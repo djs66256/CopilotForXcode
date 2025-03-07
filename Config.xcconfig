@@ -3,11 +3,11 @@ SLASH = /
 
 HOST_APP_NAME = Xopilot
 BUNDLE_IDENTIFIER_BASE = com.daniel.Xopilot
-SPARKLE_FEED_URL = https:$(SLASH)$(SLASH)copilotforxcode.daniel.com/appcast.xml
+SPARKLE_FEED_URL = https:$(SLASH)$(SLASH)xopilot.daniel.com/appcast.xml
 SPARKLE_PUBLIC_KEY = WDzm5GHnc6c8kjeJEgX5GuGiPpW6Lc/ovGjLnrrZvPY=
 APPLICATION_SUPPORT_FOLDER = com.daniel.Xopilot
 EXTENSION_BUNDLE_NAME = Xopilot
 EXTENSION_BUNDLE_DISPLAY_NAME = Xopilot
-EXTENSION_SERVICE_NAME = CopilotForXcodeExtensionService
+EXTENSION_SERVICE_NAME = XopilotExtensionService
 
 // see also target Configs

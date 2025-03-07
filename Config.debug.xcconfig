@@ -8,6 +8,6 @@ SPARKLE_PUBLIC_KEY = WDzm5GHnc6c8kjeJEgX5GuGiPpW6Lc/ovGjLnrrZvPY=
 APPLICATION_SUPPORT_FOLDER = dev.com.daniel.Xopilot
 EXTENSION_BUNDLE_NAME = Xopilot Dev
 EXTENSION_BUNDLE_DISPLAY_NAME = Xopilot Dev
-EXTENSION_SERVICE_NAME = CopilotForXcodeExtensionService
+EXTENSION_SERVICE_NAME = XopilotExtensionService
 
 // see also target Configs

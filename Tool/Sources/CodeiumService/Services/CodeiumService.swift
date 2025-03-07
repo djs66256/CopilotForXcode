@@ -110,7 +110,7 @@ public class CodeiumService {
         let metadata = try await getMetadata()
         let tempFolderURL = FileManager.default.temporaryDirectory
         let managerDirectoryURL = tempFolderURL
-            .appendingPathComponent("com.daniel.CopilotForXcode")
+            .appendingPathComponent("com.daniel.Xopilot")
             .appendingPathComponent(UUID().uuidString)
         if !FileManager.default.fileExists(atPath: managerDirectoryURL.path) {
             try FileManager.default.createDirectory(

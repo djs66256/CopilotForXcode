@@ -63,7 +63,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "C861E60D2994F6070056CB02"
-            BuildableName = "CopilotForXcodeExtensionService.app"
+            BuildableName = "XopilotExtensionService.app"
             BlueprintName = "ExtensionService"
             ReferencedContainer = "container:Copilot for Xcode.xcodeproj">
          </BuildableReference>

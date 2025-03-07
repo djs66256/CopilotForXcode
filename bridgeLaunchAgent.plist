@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>Label</key>
-	<string>com.daniel.CopilotForXcode.CommunicationBridge</string>
+	<string>com.daniel.Xopilot.CommunicationBridge</string>
 	<key>Program</key>
-	<string>/Applications/Copilot for Xcode.app/Contents/Applications/CommunicationBridge</string>
+	<string>/Applications/Xopilot.app/Contents/Applications/CommunicationBridge</string>
 	<key>MachServices</key>
 	<dict>
 		<key>com.daniel.Xopilot.CommunicationBridge</key>

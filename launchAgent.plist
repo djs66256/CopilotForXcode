@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>Label</key>
-	<string>com.daniel.CopilotForXcode.ExtensionService</string>
+	<string>com.daniel.Xopilot.ExtensionService</string>
 	<key>Program</key>
-	<string>/Applications/Copilot for Xcode.app/Contents/Applications/CopilotForXcodeExtensionService.app/Contents/MacOS/CopilotForXcodeExtensionService</string>
+	<string>/Applications/Xopilot.app/Contents/Applications/XopilotExtensionService.app/Contents/MacOS/XopilotExtensionService</string>
 	<key>MachServices</key>
 	<dict>
 		<key>com.daniel.Xopilot.ExtensionService</key>

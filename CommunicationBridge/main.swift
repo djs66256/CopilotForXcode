@@ -4,8 +4,8 @@ import Foundation
 class AppDelegate: NSObject, NSApplicationDelegate {}
 
 let bundleIdentifierBase = Bundle(url: Bundle.main.bundleURL.appendingPathComponent(
-    "CopilotForXcodeExtensionService.app"
-))?.object(forInfoDictionaryKey: "BUNDLE_IDENTIFIER_BASE") as? String ?? "com.daniel.CopilotForXcode"
+    "XopilotExtensionService.app"
+))?.object(forInfoDictionaryKey: "BUNDLE_IDENTIFIER_BASE") as? String ?? "com.daniel.Xopilot"
 
 let serviceIdentifier = bundleIdentifierBase + ".CommunicationBridge"
 let appDelegate = AppDelegate()
